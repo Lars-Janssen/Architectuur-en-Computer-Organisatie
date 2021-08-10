@@ -1,0 +1,72 @@
+# Author: Wouter Koolen-Wijkstra
+# Demo Mips program
+# works on single- and multicycle architecture
+# calculates a list of squares of consecutive integers
+
+# This program takes 130 cycles to fully execute on the Pipelined MIPS processor
+
+
+# import the MIPS assembler definitions (syntax + semantics)
+@include "Mips.wasm"
+
+
+#.data MyRegiters : REGISTERS
+#0x00 : WORD 0x00 # put $0 to zero (default assumption)
+
+.data MyRegisters : REGISTERS
+0:     	WORD Zero 0
+
+
+.data MyMemory : DATAMEM 
+0x00 : WORD result
+
+
+
+.code MyCode: MIPS, MyMemory
+# the starting number to square
+LUI $1, 0x3
+ORI $1,$1, 0xA
+
+# the one-after-last number to square
+LUI $2, 0x0
+ORI $2, $2, 0x10
+
+# the index to write the result in memory
+LUI $3, 0x0
+ORI $3, $3, 0x4
+
+ADD $6, $1, $2
+SUB $6, $2, $1
+OR $7, $1, $2
+NOR $8, $1, $2
+SLL $9, $2,$3
+LUI $1, 0x80
+LUI $2, 2
+ORI $2, $2, 3
+SRL $10, $1, $2
+LUI $1, 0x1001
+ORI $1, $1, 0x1234
+MULT $1, $2   
+MFLO $11
+MFHI $12
+
+LUI $1, 0
+ORI $1, $1, 8
+LUI $2, 2
+#DIV $1, $2
+
+
+# a (case sensitive) label delimits the loop
+Loop:	
+	#calculate the square
+	MULT 	$1, $1
+	MFHI	$4
+	MFLO	$3
+	OR	$4, $4, $3
+	NOP			# to ensure $4 is available on time
+	ADDI 	$1, $1, 0x1 	# next number
+	SW 	$4, result, $3	# store the square
+	ADDI 	$3, $3, 0x4	# next memory location
+	BNE 	$1, $2, Loop	# compare to maximum integer to square
+NOP
+NOP

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="PCMUX" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <POLYGON COLOR="#000000">
+            <STROKE/>
+            <POINT POSX="20.0" POSY="10.0"/>
+            <POINT POSX="30.0" POSY="0.0"/>
+            <POINT POSX="60.0" POSY="0.0"/>
+            <POINT POSX="70.0" POSY="10.0"/>
+            <POINT POSX="70.0" POSY="50.0"/>
+            <POINT POSX="60.0" POSY="60.0"/>
+            <POINT POSX="30.0" POSY="60.0"/>
+            <POINT POSX="20.0" POSY="50.0"/>
+        </POLYGON>
+        <TEXT POSX="45.0" POSY="30.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">MUX</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="70.0" POSY="20.0" NAME="A">
+            <LABEL POSX="40.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="70.0" POSY="30.0" NAME="B">
+            <LABEL POSX="30.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="70.0" POSY="40.0" NAME="C">
+            <LABEL POSX="20.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="40.0" POSY="0.0" NAME="CM">
+            <LABEL POSX="0.0" POSY="-20.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="50.0" POSY="0.0" NAME="BR">
+            <LABEL POSX="20.0" POSY="-20.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="20.0" POSY="30.0" NAME="R">
+            <LABEL POSX="-20.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="1">
+        <ACTION EVENT="INPUT_CHANGE">if (CM)
+{
+	R = A;
+}
+else
+{
+	if (BR)
+	{
+		R = B;
+	}
+	else
+	{
+		R = C;
+	}
+}</ACTION>
+    </INTERNALS>
+</SIMPLE>

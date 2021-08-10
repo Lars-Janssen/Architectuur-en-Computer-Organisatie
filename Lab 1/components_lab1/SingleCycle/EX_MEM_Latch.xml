@@ -1,0 +1,81 @@
+<?xml version="1.0"?>
+
+<SIMPLE NAME="EX/MEM Latch">
+	<FORMS>
+		<RECTANGLE POSX="-10" POSY = "-320" WIDTH="20" HEIGHT="90" COLOR="#00A000" FILLED="true"/>
+		<RECTANGLE POSX="-10" POSY = "-200" WIDTH="20" HEIGHT="400" COLOR="#0000C0" FILLED="true"/>
+	</FORMS>
+
+	<IO>
+		<INPUT	 COLOR="#000000"     NAME = "RegWriteIn"		BITS="1"  POSX="-10" POSY = "-310"/>
+		<INPUT	 COLOR="#000000"     NAME = "MemToRegIn"		BITS="1"  POSX="-10" POSY = "-300"/>
+
+		<INPUT	 COLOR="#000000"     NAME = "MemReadIn"			BITS="1"  POSX="-10" POSY = "-290"/>
+		<INPUT	 COLOR="#000000"     NAME = "MemWriteIn"		BITS="1"  POSX="-10" POSY = "-280"/>
+		<INPUT	 COLOR="#000000"     NAME = "BranchIn"			BITS="1"  POSX="-10" POSY = "-270"/>
+
+		<INPUT	 COLOR="#000000"     NAME = "In2" BITS="32"  POSX="-10" POSY = "-160"/>
+
+		<INPUT	 COLOR="#000000"     NAME = "In3" BITS="1"  POSX="-10" POSY = "-80"/>
+		<INPUT	 COLOR="#000000"     NAME = "In4" BITS="32"  POSX="-10" POSY = "-60"/>
+
+		<INPUT	 COLOR="#000000"     NAME = "In5" BITS="32"  POSX="-10" POSY = "-10"/>
+
+		<INPUT	 COLOR="#000000"     NAME = "In6" BITS="5"  POSX="-10" POSY = "145"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "RegWriteOut"		BITS="1"  POSX="10" POSY = "-310"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "MemToRegOut"		BITS="1"  POSX="10" POSY = "-300"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "MemReadOut"		BITS="1"  POSX="10" POSY = "-290"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "MemWriteOut"		BITS="1"  POSX="10" POSY = "-280"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "BranchOut"			BITS="1"  POSX="10" POSY = "-270"/>
+
+
+		<OUTPUT	 COLOR="#000000"     NAME = "Out2" BITS="32"  POSX="10" POSY = "-160"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "Out3" BITS="1"  POSX="10" POSY = "-80"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "Out4" BITS="32"  POSX="10" POSY = "-60"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "Out5" BITS="32"  POSX="10" POSY = "-10"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "Out6" BITS="5"  POSX="10" POSY = "145"/>
+	</IO>
+
+	<MEMORY>
+		<STORAGE NAME="FirstCycle" BITS="1" SIZE="1"/>
+	</MEMORY>
+
+
+	<INTERNALS DELAY="4">
+		<ACTION EVENT = "CLOCK_RISING">
+		if (FirstCycle[0])
+		{
+			RegWriteOut = 0;
+			MemToRegOut = 0;
+			MemReadOut =  0;
+			MemWriteOut = 0;
+			BranchOut =	 0;
+			Out2 = 0;
+			Out3 = 0;
+			Out4 = 0;
+			Out5 = 0;
+			Out6 = 0;
+			FirstCycle[0] = 0;
+		}
+		else
+		{
+			RegWriteOut = RegWriteIn;
+			MemToRegOut = MemToRegIn;
+			MemReadOut =  MemReadIn;
+			MemWriteOut = MemWriteIn;
+			BranchOut =	 BranchIn;
+			Out2 = In2;
+			Out3 = In3;
+			Out4 = In4;
+			Out5 = In5;
+			Out6 = In6;
+		}
+		</ACTION>
+	</INTERNALS>
+
+</SIMPLE>

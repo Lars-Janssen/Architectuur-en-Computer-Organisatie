@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="New Simple Component" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <LINE COLOR="#000000" FROMX="0" FROMY="-100" TOX="0" TOY="270">
+            <STROKE LINEWIDTH="2.0" LINEJOIN="2"/>
+        </LINE>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="0.0" POSY="30.0" NAME="Instruction">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="0.0" POSY="-100.0" NAME="Out32">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="5" SIGNED="false" POSX="0.0" POSY="0.0" NAME="RS">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="5" SIGNED="false" POSX="0.0" POSY="20.0" NAME="RT">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="16" SIGNED="false" POSX="0.0" POSY="160.0" NAME="Immediate">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="5" SIGNED="false" POSX="0.0" POSY="240.0" NAME="RD">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="5" SIGNED="false" POSX="0.0" POSY="270.0" NAME="RT2">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="1">
+        <ACTION EVENT="INPUT_CHANGE">{
+	Out32 = Instruction;
+	RS = Instruction &gt;&gt; 21;
+	RT2 = RT = Instruction &gt;&gt; 16;
+	RD = Instruction &gt;&gt; 11;
+	Immediate = Instruction;
+}
+		</ACTION>
+    </INTERNALS>
+</SIMPLE>

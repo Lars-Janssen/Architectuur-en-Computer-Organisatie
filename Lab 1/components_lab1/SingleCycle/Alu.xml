@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="Alu" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <POLYGON COLOR="#666666">
+            <STROKE LINEWIDTH="2.0"/>
+            <POINT POSX="-20.0" POSY="-40.0"/>
+            <POINT POSX="20.0" POSY="-15.0"/>
+            <POINT POSX="20.0" POSY="15.0"/>
+            <POINT POSX="-20.0" POSY="40.0"/>
+            <POINT POSX="-20.0" POSY="10.0"/>
+            <POINT POSX="-12.0" POSY="0.0"/>
+            <POINT POSX="-20.0" POSY="-10.0"/>
+            <POINT POSX="-20.0" POSY="-40.0"/>
+            <POINT POSX="-20.0" POSY="-40.0"/>
+        </POLYGON>
+        <TEXT POSX="4.0" POSY="0.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0"> ALU </TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="-20.0" POSY="-30.0" NAME="Src0">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="-20.0" POSY="25.0" NAME="Src1">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="5" SIGNED="false" POSX="0.0" POSY="-27.0" NAME="ALUOp">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="20.0" POSY="-10.0" NAME="Zero">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="20.0" POSY="10.0" NAME="Result">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="2">
+        <ACTION EVENT="INPUT_CHANGE">{
+	0d32 bit R;
+		 if (ALUOp == 0x00) R =  (Src0 &amp;  Src1);
+	else if (ALUOp == 0x01) R =  (Src0 |  Src1);
+	else if (ALUOp == 0x02) R = ~(Src0 &amp;  Src1);
+	else if (ALUOp == 0x03) R = ~(Src0 |  Src1);
+	else if (ALUOp == 0x04) R =  (Src0 ^  Src1);
+	else if (ALUOp == 0x05) R =  (Src0 &lt;&lt; Src1);
+	else if (ALUOp == 0x06) R =  (Src0 &gt;&gt; Src1);
+	else if (ALUOp == 0x07) R =  (Src0 &lt;  Src1);
+	else if (ALUOp == 0x08) R =  (Src0 == Src1);
+	else if (ALUOp == 0x09) R =  (Src0 +  Src1);
+	else if (ALUOp == 0x0A) R =  (Src0 -  Src1);
+	else if (ALUOp == 0x0B) R =  (Src0 *  Src1);
+	else if (ALUOp == 0x0C) R =  (Src0 *S Src1);
+	else if (ALUOp == 0x0D) { if (Src1) R =  (Src0 /  Src1); }
+	else if (ALUOp == 0x0E) { if (Src1) R =  (Src0 /S Src1); }
+	else if (ALUOp == 0x0F) R =  (Src1);
+	else if (ALUOp == 0x10) R =  (Src1 &lt;&lt; 0d16);
+
+	// write outputs
+	Result = R;
+	Zero = (R == 0);
+}
+		</ACTION>
+    </INTERNALS>
+</SIMPLE>

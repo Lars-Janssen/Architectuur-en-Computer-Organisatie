@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+
+<SIMPLE NAME="Control">
+	<FORMS>
+		<ELLIPSE POSX="0" POSY="0" RADIUSX="20" RADIUSY="50" COLOR="#00A000"/>
+		<TEXT		POSX="0"	POSY="0"    HALIGN="CENTER" VALIGN="CENTER" COLOR="#00A000">Ctrl</TEXT>
+	</FORMS>
+
+
+
+	<IO>
+		<INPUT	 COLOR="#000000"     NAME = "Instruction"	BITS = "32"	POSX="-20" POSY = "0"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "RegWrite"		BITS="1"  POSX="15" POSY = "-35"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "MemToReg"		BITS="1"  POSX="18" POSY = "-25"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "MemRead"		BITS="1"  POSX="19" POSY = "-15"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "MemWrite"		BITS="1"  POSX="20" POSY = " -5"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "Branch"			BITS="1"  POSX="20" POSY = " 5"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "RegDst"			BITS="1"  POSX="19" POSY = " 15"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "ALUOp"			BITS="5"  POSX="18" POSY = " 25"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "ALUSrc"			BITS="1"  POSX="15" POSY = " 35"/>
+
+
+	</IO>
+
+
+	<INTERNALS DELAY="3">
+		<ACTION EVENT = "INPUT_CHANGE">
+											    {
+														if (Instruction == 0)
+														{
+															RegDst =	0;
+															ALUSrc =	0;
+															MemToReg =	0;
+															RegWrite =	0;
+															MemRead =	0;
+															MemWrite =	0;
+															Branch =	0;
+															ALUOp =		0b00;
+														}
+														else
+														{
+															0d6 bit Op = Instruction >> 0d26;
+															if (Op == 0b000000)
+															{
+																RegDst =	0;
+																ALUSrc =	0;
+																MemToReg =	0;
+																RegWrite =	1;
+																MemRead =	0;
+																MemWrite =	0;
+																Branch =	0;
+																ALUOp =		Instruction-1;
+															} else if (Op &#60;= 0x11)
+															{
+																RegDst =	1;
+																ALUSrc =	1;
+																MemToReg =	0;
+																RegWrite =	1;
+																MemRead =	0;
+																MemWrite =	0;
+																Branch =	0;
+																ALUOp =		Op-1;
+															} else if (Op == 0x20)
+															{
+																RegDst =	1;
+																ALUSrc =	1;
+																MemToReg =	1;
+																RegWrite =	1;
+																MemRead =	1;
+																MemWrite =	0;
+																Branch =	0;
+																ALUOp =		0x9;
+															} else if (Op == 0x21)
+															{
+																RegDst =	0;
+																ALUSrc =	1;
+																MemToReg =	0;
+																RegWrite =	0;
+																MemRead =	0;
+																MemWrite =	1;
+																Branch =	0;
+																ALUOp =		0x9;
+															} else if (Op == 0x30)
+															{
+																RegDst =	0;
+																ALUSrc =	0;
+																MemToReg =	0;
+																RegWrite =	0;
+																MemRead =	0;
+																MemWrite =	0;
+																Branch =	1;
+																ALUOp =		0x4;
+															} else if (Op == 0x31)
+															{
+																RegDst =	0;
+																ALUSrc =	0;
+																MemToReg =	0;
+																RegWrite =	0;
+																MemRead =	0;
+																MemWrite =	0;
+																Branch =	1;
+																ALUOp =		0x8;
+															}
+														}
+													}
+		</ACTION>
+	</INTERNALS>
+
+</SIMPLE>

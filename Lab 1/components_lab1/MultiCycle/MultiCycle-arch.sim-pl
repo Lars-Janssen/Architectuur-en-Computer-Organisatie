@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<COMPLEX NAME="MultiCycle-arch" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#000000" POSX="-3650.0" POSY="-630.0"
+            WIDTH="60.0" HEIGHT="40.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+            <FILL COLOR="#FFFF33"/>
+        </RECTANGLE>
+        <TEXT POSX="-3620.0" POSY="-610.0" HALIGN="CENTER"
+            VALIGN="CENTER" COLOR="#000000" FONT="SansSerif,plain,14.0">PC</TEXT>
+        <RECTANGLE COLOR="#000000" POSX="-3650.0" POSY="-310.0"
+            WIDTH="60.0" HEIGHT="40.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+            <FILL COLOR="#FF9999"/>
+        </RECTANGLE>
+        <TEXT POSX="-3620.0" POSY="-290.0" HALIGN="CENTER"
+            VALIGN="CENTER" COLOR="#000000" FONT="SansSerif,plain,14.0">CLK</TEXT>
+        <TEXT POSX="-3010.0" POSY="-840.0" HALIGN="CENTER"
+            VALIGN="CENTER" COLOR="#000000" FONT="SansSerif,bold,20.0">MultiCycle Architecture</TEXT>
+        <LINE COLOR="#000000" FROMX="-3590" FROMY="-610" TOX="-3480" TOY="-610">
+            <STROKE/>
+        </LINE>
+        <LINE COLOR="#000000" FROMX="-3590" FROMY="-290" TOX="-3480" TOY="-290">
+            <STROKE/>
+        </LINE>
+    </FORMS>
+    <IO/>
+    <SUBCOMPONENTS>
+        <SUBCOMPONENT NAME="MultiCycle Mips Processor"
+            DATA="MultiCycle.xml" POSX="-3380.0" POSY="-740.0"
+            ZOOM="1.0" FLIP="NONE">
+            <PARAMETERVALS/>
+            <STUBS/>
+        </SUBCOMPONENT>
+        <SUBCOMPONENT NAME="ArchOvelay" DATA="ArchOvelay.sim-pl"
+            POSX="-3470.0" POSY="-1210.0" ZOOM="1.0" FLIP="NONE">
+            <PARAMETERVALS/>
+            <STUBS/>
+        </SUBCOMPONENT>
+    </SUBCOMPONENTS>
+    <WIRES/>
+</COMPLEX>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="IF/ID Latch" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#0000C0" POSX="-10.0" POSY="-200.0"
+            WIDTH="20.0" HEIGHT="400.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+            <FILL COLOR="#0000C0"/>
+        </RECTANGLE>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="-10.0" POSY="-180.0" NAME="In0">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="-10.0" POSY="-80.0" NAME="In1">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="10.0" POSY="-180.0" NAME="Out0">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="10.0" POSY="-80.0" NAME="Out1">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY>
+        <STORAGE NAME="FirstCycle" SIZE="1" BITS="1" SIGNED="false"/>
+    </MEMORY>
+    <INTERNALS DELAY="6">
+        <ACTION EVENT="CLOCK_RISING">
+		if (FirstCycle[0])
+		{
+			Out0 = 0;
+			Out1 = 0;
+			FirstCycle[0] = 0;
+		}
+		else
+		{
+			Out0 = In0;
+			Out1 = In1;
+		}
+		</ACTION>
+    </INTERNALS>
+</SIMPLE>

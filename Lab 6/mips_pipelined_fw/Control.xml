@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="Control" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <ELLIPSE COLOR="#00A000" POSX="0.0" POSY="0.0" RADIUSX="20.0" RADIUSY="50.0">
+            <STROKE/>
+        </ELLIPSE>
+        <TEXT POSX="0.0" POSY="0.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#00A000" FONT="Dialog,plain,12.0">Ctrl</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="-20.0" POSY="0.0" NAME="Instruction">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="14.0" POSY="-35.0" NAME="RegWrite">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="18.0" POSY="-25.0" NAME="MemToReg">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="19.0" POSY="-15.0" NAME="MemRead">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="20.0" POSY="-5.0" NAME="MemWrite">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="20.0" POSY="5.0" NAME="Branch">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="19.0" POSY="15.0" NAME="RegDst">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="5" SIGNED="false" POSX="17.0" POSY="25.0" NAME="ALUOp">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="14.0" POSY="35.0" NAME="ALUSrc">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="10.0" POSY="45.0" NAME="ZeroExt">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="3">
+        <ACTION EVENT="INPUT_CHANGE">{
+	ZeroExt = 0;
+    if (Instruction == 0)
+    {
+        RegDst =    0;
+        ALUSrc =    0;
+        MemToReg =  0;
+        RegWrite =  0;
+        MemRead =   0;
+        MemWrite =  0;
+        Branch =    0;
+        ALUOp =     0b00;
+    }
+    else
+    {
+        6 bit Op = Instruction &gt;&gt; 26;
+		6 bit func = Instruction;
+        if (Op == 0 &amp;&amp; func &gt;= 0x20)
+        {
+            RegDst =    0;
+            ALUSrc =    0;
+            MemToReg =  0;
+            RegWrite =  1;
+            MemRead =   0;
+            MemWrite =  0;
+            Branch =    0;
+            ALUOp =     func - 0x20;
+        }
+		else if (Op == 0 &amp;&amp; func == 0x18) {
+			RegDst =    0;
+            ALUSrc =    0;
+            MemToReg =  0;
+            RegWrite =  1;
+            MemRead =   0;
+            MemWrite =  0;
+            Branch =    0;
+            ALUOp =     0x0B;
+		}
+		else if (Op == 0 &amp;&amp; func &lt;= 7)
+		{
+			RegDst =    0;
+			ALUSrc =    func &lt;= 3;
+            MemToReg =  0;
+            RegWrite =  1;
+            MemRead =   0;
+            MemWrite =  0;
+            Branch =    0;
+			if (func &lt;= 3)
+				ALUOp =     func + 0x10;
+			else
+				ALUOp =     func + 0x14;
+		}
+		else if (Op &lt;= 0x0E &amp;&amp; Op &gt;= 0x08)
+        {
+            RegDst =    1;
+            ALUSrc =    1;
+            MemToReg =  0;
+            RegWrite =  1;
+            MemRead =   0;
+            MemWrite =  0;
+            Branch =    0;
+			ZeroExt = Op &gt;= 0xC; // and/or/xor do not sign extend
+			if (Op == 9 || Op == 10)
+	            ALUOp = Op;
+			else
+				ALUOp = Op - 8;
+        }
+		else if (Op == 0x0F)
+        {
+            RegDst =    1;
+            ALUSrc =    1;
+            MemToReg =  0;
+            RegWrite =  1;
+            MemRead =   0;
+            MemWrite =  0;
+            Branch =    0;
+			ALUOp = 0x0C;
+        }
+		else if (Op == 0x23)
+        {
+            RegDst =    1;
+            ALUSrc =    1;
+            MemToReg =  1;
+            RegWrite =  1;
+            MemRead =   1;
+            MemWrite =  0;
+            Branch =    0;
+            ALUOp =     0;
+        } else if (Op == 0x2B)
+        {
+            RegDst =    0;
+            ALUSrc =    1;
+            MemToReg =  0;
+            RegWrite =  0;
+            MemRead =   0;
+            MemWrite =  1;
+            Branch =    0;
+            ALUOp =     0;
+        } else if (Op == 0x04)
+        {
+            RegDst =    0;
+            ALUSrc =    0;
+            MemToReg =  0;
+            RegWrite =  0;
+            MemRead =   0;
+            MemWrite =  0;
+            Branch =    1;
+            ALUOp =     6;
+        } else if (Op == 0x05)
+        {
+            RegDst =    0;
+            ALUSrc =    0;
+            MemToReg =  0;
+            RegWrite =  0;
+            MemRead =   0;
+            MemWrite =  0;
+            Branch =    1;
+            ALUOp =     0x1F;
+        }
+    }
+}</ACTION>
+    </INTERNALS>
+</SIMPLE>

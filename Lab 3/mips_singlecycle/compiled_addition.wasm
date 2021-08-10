@@ -1,0 +1,53 @@
+#generated assembly code for SIMPL
+@include "Mips.wasm"
+.data	MyRegisters:	REGISTERS
+0:	WORD    zero    0      
+1:	WORD    temp    0      
+2:	WORD     0      
+3:	WORD     0      
+4:	WORD     0      
+5:	WORD     0      
+6:	WORD     0      
+7:	WORD     0      
+8:	WORD     0      
+9:	WORD     0      
+10:	WORD     0      
+29:	WORD    sp      0      
+31:	WORD    ra     
+.data	MyMemory:	DATAMEM
+50:	WORD stack	# start of stack
+0:	WORD    a       0      
+1:	WORD    b       0      
+2:	WORD    result  0  
+4:	WORD 6 
+7:	WORD    6
+16:	WORD 9
+   
+.code	MyCode:	MIPS,MyMemory
+	J       INIT   
+L1:	# main
+	LUI     $1     , 1      	# storing numeric into reg
+	ORI     $1     , $1     , 9029   
+	SW      $1     , a      , $0     	# assignment of var
+	# expr;
+	LUI     $1     , 3      	# storing numeric into reg
+	ORI     $1     , $1     , 0x7      
+	SW      $1     , b      , $0     	# assignment of var
+	ORI $2, $2, 8
+	SW      $1     , 3, $2 # store contents of $2 + b into location $1
+
+	ORI $2, $0, 4
+	LW $3, 3, $2
+	# expr;
+	LW      $1     , a      , $0     	# storing var into reg
+	LW      $2     , b      , $0     	# storing var into reg
+	ADD     $1     , $1     , $2     	# add operation
+	SW      $1     , result , $0     	# assignment of var
+	# expr;
+	LUI     $1     , 0      	# storing numeric into reg
+	ORI     $1     , $1     , 1      
+	#return int value	# stack ret value
+	JR      $31    	# return
+INIT:	# Start of our program
+	J       L1     	# jump to the main code
+END:

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+
+<SIMPLE NAME="MEM/WB Latch">
+	<FORMS>
+		<RECTANGLE POSX="-10" POSY = "-320" WIDTH="20" HEIGHT="90" COLOR="#00A000" FILLED="true"/>
+		<RECTANGLE POSX="-10" POSY = "-200" WIDTH="20" HEIGHT="400" COLOR="#0000C0" FILLED="true"/>
+	</FORMS>
+
+	<IO>
+		<INPUT	 COLOR="#000000"     NAME = "RegWriteIn" BITS="1"  POSX="-10" POSY = "-310"/>
+		<INPUT	 COLOR="#000000"     NAME = "MemToRegIn" BITS="1"  POSX="-10" POSY = "-300"/>
+
+		<INPUT	 COLOR="#000000"     NAME = "In1" BITS="32"  POSX="-10" POSY = " -40"/>
+		<INPUT	 COLOR="#000000"     NAME = "In2" BITS="32"  POSX="-10" POSY = "  25"/>
+		<INPUT	 COLOR="#000000"     NAME = "In3" BITS="5"  POSX="-10" POSY = " 145"/>
+
+
+		<OUTPUT	 COLOR="#000000"     NAME = "RegWriteOut" BITS="1"  POSX="10" POSY = "-310"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "MemToRegOut" BITS="1"  POSX="10" POSY = "-300"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "Out1" BITS="32"  POSX="10" POSY = " -40"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "Out2" BITS="32"  POSX="10" POSY = "  25"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "Out3" BITS="5"  POSX="10" POSY = " 145"/>
+	</IO>
+
+	<MEMORY>
+		<STORAGE NAME="FirstCycle" BITS="1" SIZE="1"/>
+	</MEMORY>
+
+
+	<INTERNALS DELAY="4">
+		<ACTION EVENT = "CLOCK_RISING">
+		if (FirstCycle[0])
+		{
+			RegWriteOut = 0;
+			MemToRegOut = 0;
+			Out1 = 0;
+			Out2 = 0;
+			Out3 = 0;
+			FirstCycle[0] = 0;
+		}
+		else
+		{
+			RegWriteOut = RegWriteIn;
+			MemToRegOut = MemToRegIn;
+			Out1 = In1;
+			Out2 = In2;
+			Out3 = In3;
+		}
+		</ACTION>
+	</INTERNALS>
+
+</SIMPLE>

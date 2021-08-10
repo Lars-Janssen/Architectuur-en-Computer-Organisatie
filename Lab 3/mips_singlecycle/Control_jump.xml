@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="Control" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <ELLIPSE COLOR="#00A000" POSX="-2.5" POSY="-5.0" RADIUSX="22.5" RADIUSY="65.0">
+            <STROKE/>
+        </ELLIPSE>
+        <TEXT POSX="-5.0" POSY="0.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#00A000" FONT="Dialog,plain,12.0">Ctrl</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="-25.0" POSY="0.0" NAME="Instruction">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="15.0" POSY="-25.0" NAME="RegWrite">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="18.0" POSY="-15.0" NAME="MemToReg">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="19.0" POSY="-5.0" NAME="MemRead">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="20.0" POSY="5.0" NAME="MemWrite">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="20.0" POSY="15.0" NAME="Branch">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="19.0" POSY="25.0" NAME="RegDst">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="11" SIGNED="false" POSX="18.0" POSY="35.0" NAME="ALUOp">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="15.0" POSY="45.0" NAME="ALUSrc">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="15.0" POSY="-35.0" NAME="Jump">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="15.0" POSY="-45.0" NAME="Jal">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="10.0" POSY="-55.0" NAME="Jr">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="3">
+        <ACTION EVENT="INPUT_CHANGE">
+{
+        6 bit Op = Instruction &gt;&gt; 26;
+        11 bit Func = Instruction &amp; 0x7FF;
+
+		if (Instruction == 0)
+		{
+			Jr = 0;
+			Jal = 0;
+			Jump = 0;
+			RegDst =	0;
+			ALUSrc =	0;
+			MemToReg =	0;
+			RegWrite =	0;
+			MemRead =	0;
+			MemWrite =	0;
+			Branch =	0;
+			ALUOp =		Func;
+		}
+		else {
+        if (Op == 0b000000) { //R format
+				//read regs on func=mult, multu, div, divu, 
+                if (Func == 0x18 || Func == 0x19 || Func == 0x1A || 
+					Func== 0x1B){
+					Jr = 0;
+					Jal = 0;
+					Jump = 0;
+  	            	RegDst =	0;
+    	            ALUSrc =	0;
+        	        MemToReg =	0;
+	            	RegWrite =	0;
+    	            MemRead =	0;
+        	        MemWrite =	0;
+            	    Branch =	0;
+                	ALUOp =		Func;
+                } else if (Func == 0x08){ //JR $rs instruction
+					Jr = 1;
+					Jal = 0;
+					Jump = 0;
+	                RegDst =	0;
+    	            ALUSrc =	0;
+        	        MemToReg =	0;
+            	    RegWrite =	0;
+                	MemRead =	0;
+	                MemWrite =	0;
+    	            Branch =	0;
+        	        ALUOp =		Func;
+                } else {
+					Jr = 0;
+					Jal = 0;
+					Jump = 0;
+	                RegDst =	0;
+    	            ALUSrc =	0;
+        	        MemToReg =	0;
+            	    RegWrite =	1;
+                	MemRead =	0;
+	                MemWrite =	0;
+    	            Branch =	0;
+        	        ALUOp =		Func;
+                }
+
+			} else if (Op == 0x02|| Op==0x03){ //jump and Jal
+					Jr = 0;
+					Jal = 1;
+					Jump = 1;
+	                RegDst =	0;
+    	            ALUSrc =	0;
+        	        MemToReg =	0;
+            	    RegWrite =	1;
+                	MemRead =	0;
+	                MemWrite =	0;
+    	            Branch =	1;
+        	        ALUOp =		0x0;
+  			} else if (Op == 0x09){ //jump and link (JALR)
+					Jr = 0;
+					Jal = 0; //TBD ipv R31 inhoud van Rs nemen
+					Jump = 1;
+	                RegDst =	0;
+    	            ALUSrc =	0;
+        	        MemToReg =	0;
+            	    RegWrite =	0;
+                	MemRead =	0;
+	                MemWrite =	0;
+    	            Branch =	1;
+        	        ALUOp =		0x09;
+  			
+
+            } else if (Op == 0x04) {
+				Jr = 0;
+				Jal = 0;
+				Jump = 0;
+                RegDst =	0; //BEQ
+                ALUSrc =	0;
+                MemToReg =	0;
+                RegWrite =	0;
+                MemRead =	0;
+                MemWrite =	0;
+                Branch =	1;
+                ALUOp =		0x04;
+            } else if (Op == 0x05) {
+				Jr = 0;
+				Jal = 0;
+				Jump = 0;
+                RegDst =	0; //BNE
+                ALUSrc =	0;
+                MemToReg =	0;
+                RegWrite =	0;
+                MemRead =	0;
+                MemWrite =	0;
+                Branch =	1;
+                ALUOp =		0x5;
+           } else if (Op == 0x10) {
+				Jr = 0;
+				Jal = 0;
+				Jump = 0;
+                RegDst =	0; //J 
+                ALUSrc =	0;
+                MemToReg =	0;
+                RegWrite =	0;
+                MemRead =	0;
+                MemWrite =	0;
+                Branch =	1;
+                ALUOp =		0x02;   
+          } else if (Op &lt;= 0x11) {
+				Jr = 0;
+				Jal = 0;
+				Jump = 0;
+				RegDst =	1;
+				ALUSrc =	1;
+				MemToReg =	0;
+				RegWrite =	1;
+				MemRead =	0;
+				MemWrite =	0;
+				Branch =	0;
+				ALUOp =		Op;
+			} else if (Op == 0x20) {
+				Jr = 0;
+				Jal = 0;
+				Jump = 0;
+				RegDst =	1;
+				ALUSrc =	1;
+				MemToReg =	1;
+				RegWrite =	1;
+				MemRead =	1;
+				MemWrite =	0;
+				Branch =	0;
+				ALUOp =		0x9;
+			} else if (Op == 0x2B) {
+				Jr = 0;
+				Jal = 0;
+				Jump = 0;
+				RegDst =	0;
+				ALUSrc =	1;
+				MemToReg =	0;
+				RegWrite =	0;
+				MemRead =	0;
+				MemWrite =	1;
+				Branch =	0;
+                ALUOp =		0x2B; //SW
+             } else if (Op == 0x23){
+				Jr = 0;
+     			Jal = 0;
+				Jump = 0;
+				RegDst    = 1;
+				ALUSrc    = 1;
+				MemToReg =	1;
+				RegWrite =	1;
+				MemRead =	1;
+				MemWrite =	0;
+				Branch =	0;
+				ALUOp =		Op;
+
+			}
+		}
+	}
+		</ACTION>
+    </INTERNALS>
+</SIMPLE>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="FourMux" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <TEXT POSX="70.0" POSY="75.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Serif,plain,10.0">MUX</TEXT>
+        <RECTANGLE COLOR="#000000" POSX="45.0" POSY="65.0" WIDTH="50.0"
+            HEIGHT="20.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+        </RECTANGLE>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="45.0" POSY="75.0" NAME="Regular">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="2" SIGNED="false" POSX="85.0" POSY="85.0" NAME="Control">
+            <LABEL POSX="125.0" POSY="30.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="75.0" POSY="85.0" NAME="FromMEM">
+            <LABEL POSX="85.0" POSY="30.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="65.0" POSY="85.0" NAME="FromTC">
+            <LABEL POSX="30.0" POSY="30.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="95.0" POSY="75.0" NAME="Out">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="55.0" POSY="85.0" NAME="FromWB">
+            <LABEL POSX="-10.0" POSY="30.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="1">
+        <ACTION EVENT="INPUT_CHANGE">if (Control == 0)
+	Out = Regular;
+else if (Control == 1)
+	Out = FromWB;
+else if (Control == 2)
+	Out = FromTC;
+else if (Control == 3)
+	Out = FromMEM;
+else
+	Out = 0;</ACTION>
+    </INTERNALS>
+</SIMPLE>

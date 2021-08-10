@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="Control" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <ELLIPSE COLOR="#009900" POSX="100.0" POSY="40.0" RADIUSX="30.0" RADIUSY="60.0">
+            <STROKE/>
+        </ELLIPSE>
+        <TEXT POSX="100.0" POSY="40.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#009900" FONT="Dialog,plain,12.0">Control</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="100.0" POSY="100.0" NAME="Instruction">
+            <LABEL POSX="0.0" POSY="10.0" HALIGN="CENTER" VALIGN="TOP"/>
+        </INPUT>
+        <INPUT BITS="4" SIGNED="false" POSX="90.0" POSY="-17.0" NAME="State">
+            <LABEL POSX="-10.0" POSY="-10.0" HALIGN="RIGHT" VALIGN="BOTTOM"/>
+        </INPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="117.0" POSY="-10.0" NAME="PCSource">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="5" SIGNED="false" POSX="126.0" POSY="10.0" NAME="ALUOp">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="2" SIGNED="false" POSX="130.0" POSY="30.0" NAME="ALUSrcB">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="130.0" POSY="50.0" NAME="ALUSrcA">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="126.0" POSY="70.0" NAME="RegWrite">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="117.0" POSY="90.0" NAME="RegDst">
+            <LABEL POSX="10.0" POSY="10.0" HALIGN="LEFT" VALIGN="TOP"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="83.0" POSY="-10.0" NAME="PCWriteCond">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="74.0" POSY="10.0" NAME="PCWrite">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="70.0" POSY="30.0" NAME="IorD">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="70.0" POSY="50.0" NAME="MemRead">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="74.0" POSY="70.0" NAME="MemWrite">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="123.0" POSY="80.0" NAME="MemToReg">
+            <LABEL POSX="10.0" POSY="5.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="83.0" POSY="90.0" NAME="IRWrite">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="4" SIGNED="false" POSX="110.0" POSY="-17.0" NAME="NextState">
+            <LABEL POSX="10.0" POSY="-10.0" HALIGN="LEFT" VALIGN="BOTTOM"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="1">
+        <ACTION EVENT="INPUT_CHANGE">
+/* Wouter Koolen-Wijkstra
+ * MultiCycle Mips Control Unit
+ * Implemented as a state machine
+ */
+
+{
+
+	// 'decode' instruction format
+	6 bit Op = 	  	Instruction &gt;&gt; 0d26; 
+
+	// all outputs (with their default values):
+	PCWriteCond = 	0; // no conditional jump
+	PCWrite = 		0; // no PC advancement
+	IorD = 			0; // instruction
+	MemRead =		0; // no memory read
+	MemWrite =		0; // no memory write
+	IRWrite =		0; // accept instruction in decoder
+	PCSource =		0b00; // next instruction comes from PC+1
+	ALUOp =			0x0; // don't rely on this
+	ALUSrcB =		0; // register (not immediate)
+	ALUSrcA =		1; // register (not PC)
+	RegWrite =		0; // no register write
+	MemToReg =		0; // result to reg (not memory value)
+	RegDst =		0; // result register in rd (not rt)
+
+
+switch(State)
+{
+	case 0xF: /* Bootstrapping */
+	case 0x0: /* Instruction Fetch */
+		MemRead = 1;
+		ALUSrcA = 0;
+		IorD = 0;
+		IRWrite = 1;
+		ALUSrcB = 0b01;
+		ALUOp = 0x9; // addition (next PC value)
+		PCWrite = 1;
+		PCSource = 0b00;
+		NextState = 0x1; // go to Instruction Decode/Register Fetch
+	break;
+
+
+	case 0x1: /* Instruction Decode/Register Fetch */
+		ALUSrcA = 0;
+		ALUSrcB = 0b11; // use &lt;&lt;2 immediate as offset
+		ALUOp = 0x9;    // addition (branch PC value)
+		MemWrite = 0;
+
+		if (Instruction == 0)
+			NextState = 0x0; // NOP
+		else if (Op == 0)
+			NextState = 0x6; // R-type
+		else if (Op &lt;= 0x11)
+			NextState = 0xA; // RI type
+		else if (Op &lt;= 0x21) 
+			NextState = 0x2; // load-store
+		else if (Op &lt;= 0x31)
+			NextState = 0x8; // conditional branch
+		else 
+			NextState = 0xF; // error (before inputs stable)
+
+	break;
+
+
+	case 0x2: /* Load-Store address completion */
+		ALUSrcA = 1;
+		ALUSrcB = 0b10;
+		ALUOp = 0x9; // memory address
+
+		if (Op == 0x20)	NextState = 0x3; // load word
+		else			NextState = 0x5; // store word
+	break;
+
+
+	case 0x3: /* Load Word Memory access */
+		MemRead = 1;
+		IorD = 1;
+		NextState = 0x4;
+	break;
+
+	case 0x4: /* Memory read completion step */
+		RegDst = 0;
+		RegWrite = 1;
+		MemToReg = 1;
+		NextState = 0x0;
+	break;
+
+	case 0x5: /* Store word memory access */
+		MemWrite = 1;
+		IorD = 1;
+		NextState = 0x0;
+	break;
+
+	case 0x6: /* R-type execution */
+		ALUSrcA = 1;
+		ALUSrcB = 0b00;
+		ALUOp = Instruction-1;
+		NextState = 0x7;
+	break;
+
+	case 0x7: /* R-type completion */
+		RegDst = 1;
+		RegWrite = 1;
+		MemToReg = 0;
+		NextState = 0x0;
+	break;
+
+
+	case 0x8: /* Branch completion */
+		ALUSrcA = 1;
+		ALUSrcB = 0b00;
+		if (Op == 0x30) ALUOp = 0x04;
+		else            ALUOp = 0x08;
+		PCWriteCond = 1;
+		PCSource = 0b01;
+		NextState = 0x0;
+	break;
+
+	case 0x9: /* Unconditional jump */
+		PCWrite = 1;
+		PCSource = 0b10;
+		NextState = 0x0;
+	break;
+
+
+
+
+	case 0xA: /* RI-type execution */
+		ALUSrcA = 1;
+		ALUSrcB = 0b10;
+		ALUOp = Op-1;
+		NextState = 0xB;
+	break;
+
+	case 0xB: /* RI-type completion */
+		RegDst = 0;
+		RegWrite = 1;
+		MemToReg = 0;
+		NextState = 0x0;
+	break;
+
+
+	default: /* Indetermined state */
+		[0] 1 bit  a;  a[0] = 0d1; /* generate out of bounds error */
+}
+
+}
+		</ACTION>
+    </INTERNALS>
+</SIMPLE>

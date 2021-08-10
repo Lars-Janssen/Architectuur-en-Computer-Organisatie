@@ -1,0 +1,32 @@
+# Author: Wouter Koolen-Wijkstra
+# Demo Mips program
+# works on single- and multicycle architecture
+# calculates a list of squares of consecutive integers
+
+# This program takes 130 cycles to fully execute on the Pipelined MIPS processor
+
+
+# import the MIPS assembler definitions (syntax + semantics)
+@include "Mips.wasm"
+
+
+#.data MyRegiters : REGISTERS
+#0x00 : WORD 0x00 # put $0 to zero (default assumption)
+
+
+.data MyRegisters : REGISTERS
+0:     	WORD Zero 0
+2: WORD test 5
+
+.data MyMemory : DATAMEM 
+0x00 : WORD result
+0x4:WORD val 0x12345678
+
+
+.code MyCode: MIPS, MyMemory
+# the starting number to square
+LUI $1, 0x3
+ORI $1,$1, 0xA
+LW $2, 4, $0
+
+

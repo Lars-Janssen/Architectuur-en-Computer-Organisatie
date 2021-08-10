@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="WireCutter" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <POLYGON COLOR="#00A000">
+            <STROKE/>
+            <POINT POSX="-10.0" POSY="-40.0"/>
+            <POINT POSX="-5.0" POSY="-45.0"/>
+            <POINT POSX="5.0" POSY="-45.0"/>
+            <POINT POSX="10.0" POSY="-40.0"/>
+            <POINT POSX="10.0" POSY="40.0"/>
+            <POINT POSX="5.0" POSY="45.0"/>
+            <POINT POSX="-5.0" POSY="45.0"/>
+            <POINT POSX="-10.0" POSY="40.0"/>
+            <POINT POSX="-10.0" POSY="-40.0"/>
+        </POLYGON>
+    </FORMS>
+    <IO>
+        <INPUT BITS="1" SIGNED="false" POSX="0.0" POSY="-45.0" NAME="Switch">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-10.0" POSY="-35.0" NAME="RegWriteIn">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-10.0" POSY="-25.0" NAME="MemToRegIn">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-10.0" POSY="-15.0" NAME="MemReadIn">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-10.0" POSY="-5.0" NAME="MemWriteIn">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-10.0" POSY="5.0" NAME="BranchIn">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-10.0" POSY="15.0" NAME="RegDstIn">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="5" SIGNED="false" POSX="-10.0" POSY="25.0" NAME="ALUOpIn">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-10.0" POSY="35.0" NAME="ALUSrcIn">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="10.0" POSY="-35.0" NAME="RegWriteOut">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="10.0" POSY="-25.0" NAME="MemToRegOut">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="10.0" POSY="-15.0" NAME="MemReadOut">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="10.0" POSY="-5.0" NAME="MemWriteOut">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="10.0" POSY="5.0" NAME="BranchOut">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="10.0" POSY="15.0" NAME="RegDstOut">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="5" SIGNED="false" POSX="10.0" POSY="25.0" NAME="ALUOpOut">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="10.0" POSY="35.0" NAME="ALUSrcOut">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="8">
+        <ACTION EVENT="INPUT_CHANGE">		        if (Switch == 0)
+													{
+														RegWriteOut =	RegWriteIn;
+														MemToRegOut =	MemToRegIn;
+														MemReadOut =	MemReadIn;
+														MemWriteOut =	MemWriteIn;
+														BranchOut =	    BranchIn;
+														RegDstOut =	    RegDstIn;
+														ALUOpOut =		ALUOpIn;
+														ALUSrcOut =	    ALUSrcIn;
+													}
+													else
+													{
+														RegWriteOut =	0;
+														MemToRegOut =	0;
+														MemReadOut =	0;
+														MemWriteOut =	0;
+														BranchOut =	0;
+														RegDstOut =	0;
+														ALUOpOut =		0;
+														ALUSrcOut =	0;
+													}
+		</ACTION>
+        <ACTION EVENT="INIT">{
+		RegWriteOut =	0;
+		MemToRegOut =	0;
+		MemReadOut =	0;
+		MemWriteOut =	0;
+		BranchOut =	0;
+		RegDstOut =	0;
+		ALUOpOut =		0;
+		ALUSrcOut =	0;
+}</ACTION>
+    </INTERNALS>
+</SIMPLE>

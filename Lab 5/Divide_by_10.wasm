@@ -1,0 +1,62 @@
+#generated assembly code for SIMPL
+@include "Mips.wasm"
+.data	MyRegisters:	REGISTERS
+0:	WORD     	n		0      
+1:	WORD     	magic_number_m	0      
+2:	WORD     	quotient		0      
+3:	WORD     	temp		0      
+4:	WORD     	divisor		0      
+5:	WORD     	remainder		0      
+6:	WORD     0      
+7:	WORD     0      
+8:	WORD     0      
+9:	WORD     0      
+10:	WORD     0      
+29:	WORD     0      
+31:	WORD         
+.data	MyMemory:	DATAMEM
+50:	WORD stack	# start of stack
+0:	WORD     0      
+1:	WORD     0      
+2:	WORD     0  
+4:	WORD 6 
+7:	WORD    6
+16:	WORD 9
+   
+.code	MyCode:	MIPS,MyMemory
+	J       INIT   
+L1:	# main
+#I don't know why, but MULT does the same as MULTU
+#so only positive numbers work
+
+#load the number n
+	LUI     $0     , 0x0000    
+	ORI     $0     , $0     , 0xF783 
+
+#load the magic number m  
+	LUI     $1     , 0x6666
+	ORI     $1     , $1     , 0x6667
+
+#check if n is negative, because for some reason
+#SRA doesn't work
+	LUI     $3     , 0x8000
+	AND     $3     , $2     , $3
+
+#calcultate n*m/2^32
+	MULT    $0     , $1
+	MFHI    $2
+	SRL     $2     , $2     , 2
+	OR      $2     , $2     , $3
+
+#calculate the remainder
+	ORI     $4     , $4     , 0x000A
+	MULT    $4     , $2
+	MFLO    $5
+	SUB     $5     , $0     , $5
+	
+   
+	#return int value	# stack ret value
+	JR      $31    	# return
+INIT:	# Start of our program
+	J       L1     	# jump to the main code
+END:

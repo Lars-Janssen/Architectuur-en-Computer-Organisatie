@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="WireCutter3" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <POLYGON COLOR="#009900">
+            <STROKE/>
+            <POINT POSX="25.0" POSY="10.0"/>
+            <POINT POSX="35.0" POSY="10.0"/>
+            <POINT POSX="40.0" POSY="15.0"/>
+            <POINT POSX="40.0" POSY="35.0"/>
+            <POINT POSX="35.0" POSY="40.0"/>
+            <POINT POSX="25.0" POSY="40.0"/>
+            <POINT POSX="20.0" POSY="35.0"/>
+            <POINT POSX="20.0" POSY="15.0"/>
+        </POLYGON>
+    </FORMS>
+    <IO>
+        <INPUT BITS="1" SIGNED="false" POSX="20.0" POSY="20.0" NAME="In1">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="20.0" POSY="30.0" NAME="In2">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="40.0" POSY="20.0" NAME="Out1">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="40.0" POSY="30.0" NAME="Out2">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="30.0" POSY="10.0" NAME="C">
+            <LABEL POSX="0.0" POSY="-20.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="1">
+        <ACTION EVENT="INPUT_CHANGE">if (C)
+{
+	Out1 = 0;
+	Out2 = 0;
+}
+else
+{
+	Out1 = In1;
+	Out2 = In2;
+}</ACTION>
+    </INTERNALS>
+</SIMPLE>

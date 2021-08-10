@@ -1,0 +1,15 @@
+
+
+21 000c 3C020001 lui $2,65536 # 0x10000
+22 0010 34422345 ori $2,$2,0x2345
+23 0014 AFC20008 sw $2,8($9)
+24 0018 24020007 lui $2,7 # 0x7
+25 001c AFC2000C sw $2,12($9)
+26 0020 8FC30008 lw $3,8($9)
+27 0024 8FC2000C lw $2,12($9)
+28 0028 00000000 nop
+29 002c 00621021 addu $2,$3,$2
+30 0030 AFC20010 sw $2,16($9)
+
+
+The first two lines are used to load the number 0x12345 into register 2. First it loads 0x10000 into the upper 16 bits, which means the data in $2 becomes a 1 with 16 zeros. Than you use the or imediate instruction with $2 and 0x2345 to load the 0x2345 into the register, so the whole number 0x12345 is now in $2. 

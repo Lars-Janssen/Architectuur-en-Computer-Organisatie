@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="AND Gate" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <POLYGON COLOR="#00A000">
+            <STROKE/>
+            <POINT POSX="-15.0" POSY="-10.0"/>
+            <POINT POSX="8.0" POSY="-10.0"/>
+            <POINT POSX="10.0" POSY="-9.0"/>
+            <POINT POSX="12.0" POSY="-8.0"/>
+            <POINT POSX="13.0" POSY="-6.0"/>
+            <POINT POSX="14.0" POSY="-3.0"/>
+            <POINT POSX="15.0" POSY="-1.0"/>
+            <POINT POSX="15.0" POSY="1.0"/>
+            <POINT POSX="14.0" POSY="3.0"/>
+            <POINT POSX="13.0" POSY="6.0"/>
+            <POINT POSX="12.0" POSY="8.0"/>
+            <POINT POSX="10.0" POSY="9.0"/>
+            <POINT POSX="8.0" POSY="10.0"/>
+            <POINT POSX="-15.0" POSY="10.0"/>
+            <POINT POSX="-15.0" POSY="-10.0"/>
+        </POLYGON>
+        <TEXT POSX="0.0" POSY="-20.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#00A000" FONT="Dialog,plain,12.0">Miss</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="1" SIGNED="false" POSX="-15.0" POSY="-5.0" NAME="In0">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-15.0" POSY="5.0" NAME="In1">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="15.0" POSY="0.0" NAME="Out">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="8">
+        <ACTION EVENT="INPUT_CHANGE">		Out = In0 &amp;&amp; In1; </ACTION>
+    </INTERNALS>
+</SIMPLE>

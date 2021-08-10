@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<COMPLEX NAME="ArchOvelay" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#CCCCFF" POSX="-20.0" POSY="350.0"
+            WIDTH="970.0" HEIGHT="760.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+            <FILL COLOR="#FFFFFF"/>
+        </RECTANGLE>
+    </FORMS>
+    <IO/>
+    <SUBCOMPONENTS>
+        <SUBCOMPONENT NAME="ArchOvelay" DATA="ArchSymbol.sim-pl"
+            POSX="140.0" POSY="590.0" ZOOM="1.0" FLIP="NONE">
+            <PARAMETERVALS/>
+            <STUBS/>
+        </SUBCOMPONENT>
+    </SUBCOMPONENTS>
+    <WIRES/>
+</COMPLEX>

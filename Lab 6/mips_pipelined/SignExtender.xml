@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="Sign Extender" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <TEXT POSX="0.0" POSY="-10.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">Sign</TEXT>
+        <TEXT POSX="0.0" POSY="10.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">ext.</TEXT>
+        <RECTANGLE COLOR="#000000" POSX="-20.0" POSY="-20.0"
+            WIDTH="40.0" HEIGHT="40.0" RADIUSX="5.0" RADIUSY="5.0">
+            <STROKE/>
+        </RECTANGLE>
+    </FORMS>
+    <IO>
+        <INPUT BITS="16" SIGNED="false" POSX="-20.0" POSY="0.0" NAME="In">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="20.0" POSY="0.0" NAME="Out">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="3">
+        <ACTION EVENT="INPUT_CHANGE">
+									if (In &amp; 0x8000) Out = (32 bit)(In) |0xFFFF0000;
+								    else				Out = In;
+		</ACTION>
+    </INTERNALS>
+</SIMPLE>

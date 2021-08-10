@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="PC" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#666666" POSX="-15.0" POSY="-25.0"
+            WIDTH="25.0" HEIGHT="50.0" RADIUSX="7.0" RADIUSY="7.0">
+            <STROKE LINEWIDTH="2.0"/>
+        </RECTANGLE>
+        <TEXT POSX="-10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">PC</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="-15.0" POSY="0.0" NAME="In">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="10.0" POSY="0.0" NAME="Out">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY>
+        <STORAGE NAME="FirstCycle" SIZE="1" BITS="1" SIGNED="false"/>
+    </MEMORY>
+    <INTERNALS DELAY="7">
+        <ACTION EVENT="CLOCK_RISING">
+			if (FirstCycle[0])
+			{
+				Out = 0;
+				FirstCycle[0] = 0;
+			}
+			else
+			{
+				Out = In;
+			}
+		</ACTION>
+    </INTERNALS>
+</SIMPLE>

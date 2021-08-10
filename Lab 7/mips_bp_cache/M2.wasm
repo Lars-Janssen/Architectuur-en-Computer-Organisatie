@@ -1,0 +1,62 @@
+#Lars Janssen 12882712
+@include "Mips.wasm"
+
+.data MyRegisters : REGISTERS
+0x00 : WORD 0x00 # put $0 to zero (default assumption)
+1: WORD i 0  
+2: WORD j 0 
+3: WORD k 0 
+4: WORD sixteen 0x0010
+5: WORD sum 0
+6: WORD offset_a 0
+7: WORD offset_b 0
+8: WORD offset_c 0
+9: WORD temp 0
+10:WORD data_a 0
+11:WORD data_b 0
+
+.data MyMemory : DATAMEM 
+@include "matrixes.wasm"
+0x300 : WORD c 0 # you can put the result matrix starting at c
+
+.code MyCode: MIPS, MyMemory, MyRegisters
+
+
+iloop:            
+jloop:
+  LUI       sum,           0x0000
+kloop:
+
+#load a
+  MUL       offset_a,      i,            sixteen
+  ADD       offset_a,      offset_a,     k
+  SLL       offset_a,      offset_a,     0x0002
+  LW        data_a,        a,            offset_a
+
+#load b
+  MUL       offset_b,      j,            sixteen
+  ADD       offset_b,      offset_b,     k
+  SLL       offset_b,      offset_b,     0x0002
+  LW        data_b,        bt,           offset_b
+  NOP
+  ADDI      k,             k,            0x0001
+
+  MUL       temp,          data_a,       data_b
+  ADD       sum,           sum,          temp
+
+  BNE       k,             sixteen,      kloop
+  LUI       k,             0x0000           
+  
+  MUL       offset_c,      i,            sixteen
+  ADD       offset_c,      offset_c,     j
+  SLL       offset_c,      offset_c,     0x0002
+  SW        sum,           c,            offset_c
+
+  ADDI      j,             j,            0x0001
+  BNE       j,             sixteen,      jloop
+  LUI       j,             0x0000   
+
+  ADDI      i,             i,            0x0001
+  BNE       i,             sixteen,      iloop
+  
+   

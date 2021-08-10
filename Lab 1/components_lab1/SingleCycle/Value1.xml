@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+
+<SIMPLE NAME="Value">
+	<FORMS>
+		<RECTANGLE POSX="-20"  POSY="-20" WIDTH="40" HEIGHT="40" COLOR="#000000"/>
+	</FORMS>
+
+	<IO>
+		<OUTPUT	 COLOR="#000000"    	NAME = "Value" BITS="1" 	POSX="20" POSY = "0"/>
+	</IO>
+
+	<INTERNALS DELAY="11">
+		<ACTION EVENT = "INIT">		Value = 1;
+		</ACTION>
+	</INTERNALS>
+
+</SIMPLE>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<SIMPLE NAME="Adder">
+	<FORMS>
+		<POLYGON COLOR="#000000">
+			<POINT POSX="-20"  POSY="-30"/>
+			<POINT POSX="20"  POSY="-10"/>
+			<POINT POSX="20"  POSY="10"/>
+			<POINT POSX="-20"  POSY="30"/>
+			<POINT POSX="-20"  POSY="10"/>
+			<POINT POSX="-12"   POSY="0"/>
+			<POINT POSX="-20"  POSY="-10"/>
+			<POINT POSX="-20"  POSY="-30"/>
+			<POINT POSX="-20"  POSY="-30"/>
+		</POLYGON>
+		<TEXT		POSX="4"	POSY="0"	HALIGN="CENTER" VALIGN="CENTER" COLOR="#000000">Add </TEXT>
+	</FORMS>
+
+	<IO>
+		<INPUT	 COLOR="#000000"    NAME = "Arg0"	BITS = "32"	POSX="-20" POSY = "-20"/>
+		<INPUT	 COLOR="#000000"    NAME = "Arg1"	BITS = "32"	POSX="-20" POSY = "20"/>
+		<OUTPUT	 COLOR="#000000"    NAME = "Sum"	BITS = "32"	POSX="20" POSY = "0"/>
+	</IO>
+
+
+	<INTERNALS DELAY="1">
+		<ACTION EVENT = "INPUT_CHANGE">		Sum = Arg0 + Arg1; </ACTION>
+	</INTERNALS>
+
+</SIMPLE>

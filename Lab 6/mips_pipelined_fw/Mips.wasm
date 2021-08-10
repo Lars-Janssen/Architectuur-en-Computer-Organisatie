@@ -1,0 +1,123 @@
+# Authors: Harold Aptroot, Wouter Koolen-Wijkstra
+# This file contains the MIPS WASM instruction format definition
+
+.processor MIPS
+.setting targetMemory = "Mips Processor.Instruction Memory:Memory"
+
+.highlight {
+	[ "Mips Processor.Instruction Memory" | "0xFFFFFFFF-(Address==0xFFFFFFFF)*Address" | "#c8c8ff"]
+
+	# color if instruction NOP-ped out by pipeline flush
+    [ "Mips Processor.Hidden.TC/WB"  | "(PCIn>>2)*!LiveIn   + 0xFFFFFFFF*LiveIn"  | "#ff0000"]
+	[ "Mips Processor.Hidden.MEM/TC" | "(PCIn>>2)*!LiveIn   + 0xFFFFFFFF*LiveIn"  | "#ff0000"]
+	[ "Mips Processor.Hidden.EX/MEM" | "(PCIn>>2)*!LiveIn   + 0xFFFFFFFF*LiveIn"  | "#ff0000"]
+	[ "Mips Processor.Hidden.ID/EX"  | "(PCIn>>2)*!LiveIn   + 0xFFFFFFFF*LiveIn"  | "#ff0000"]
+	[ "Mips Processor.Hidden.IF/ID"  | "(PCIn>>2)*!LiveIn   + 0xFFFFFFFF*LiveIn"  | "#ff0000"]
+    
+	# color if instruction live.
+    [ "Mips Processor.Hidden.TC/WB"  | "(PCIn>>2)*LiveIn   + 0xFFFFFFFF*!LiveIn"  | "#ffa6ed"]
+	[ "Mips Processor.Hidden.MEM/TC" | "(PCIn>>2)*LiveIn   + 0xFFFFFFFF*!LiveIn"  | "#a6edff"]
+	[ "Mips Processor.Hidden.EX/MEM" | "(PCIn>>2)*LiveIn   + 0xFFFFFFFF*!LiveIn"  | "#c1ffa6"]
+	[ "Mips Processor.Hidden.ID/EX"  | "(PCIn>>2)*LiveIn   + 0xFFFFFFFF*!LiveIn"  | "#edffa6"]
+	[ "Mips Processor.Hidden.IF/ID"  | "(PCIn>>2)*LiveIn   + 0xFFFFFFFF*!LiveIn"  | "#ffe5a6"]
+
+}
+
+.constant {
+   $0  =	0x0/register
+   $1  =  	0x1/register 
+   $2  =  	0x2 /register
+   $3  =  	0x3 /register
+   $4  =  	0x4 /register
+   $5  =  	0x5 /register
+   $6  =  	0x6 /register
+   $7  =  	0x7 /register
+   $8  =  	0x8 /register
+   $9  =  	0x9 /register
+   $10 =  	0xA /register
+   $11 =   	0xB /register
+   $12 =   	0xC /register
+   $13 =   	0xD /register
+   $14 =   	0xE /register
+   $15 =   	0xF /register
+   $16 =   	0x10 /register
+   $17 =   	0x11 /register
+   $18 =   	0x12 /register
+   $19 =   	0x13 /register
+   $20 =   	0x14/register
+   $21 =   	0x15 /register
+   $22 =   	0x16 /register
+   $23 =   	0x17 /register
+   $24 =   	0x18 /register
+   $25 =   	0x19 /register
+   $26 =   	0x1A /register
+   $27 =   	0x1B /register
+   $28 =   	0x1C /register
+   $29 =   	0x1D /register
+   $30 =   	0x1E/register
+   $31 =   	0x1F /register
+}
+
+# third: instruction format and instruction definitions
+
+
+.instructionformat   NOP = 		[[ZERO:32 ] | ]
+.instructiondefinition NOP =	[NOP |  "ZERO=0;"]
+
+
+.instructionformat   ARITH  =[ [	OP:6, RS:5, RT:5, RD: 5, NUL:5, FUNC: 6 ] | rd:5/register, rs:5/register, rt:5/register]
+.instructiondefinition ADD =	[ARITH| " OP = 0; FUNC = 0x20; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition SUB =	[ARITH| " OP = 0; FUNC = 0x22; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition AND =	[ARITH| " OP = 0; FUNC = 0x24; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition OR =	[ARITH| " OP = 0; FUNC = 0x25; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition XOR =	[ARITH| " OP = 0; FUNC = 0x26; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition NOR =	[ARITH| " OP = 0; FUNC = 0x27; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition SLTU =	[ARITH| " OP = 0; FUNC = 0x29; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition SLT =	[ARITH| " OP = 0; FUNC = 0x2A; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+# MUL should actually be MULT and should actually work with the hi/lo registers, but that adds a bunch of components and is probably confusing
+.instructiondefinition MUL =	[ARITH| " OP = 0; FUNC = 0x18; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+
+
+.instructionformat   ARITHI=[[		OP:6, RS:5, RT:5, IMM:16 ] | rt:5/register, rs:5/register, imm:16/number]
+.instructiondefinition ADDI =	[ARITHI| "OP=0x08; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition SUBI =	[ARITHI| "OP=0x08; RS = rs; RT = rt; IMM = -imm;"]
+.instructiondefinition SLTIU =	[ARITHI| "OP=0x09; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition SLTI =	[ARITHI| "OP=0x0A; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition ANDI =	[ARITHI| "OP=0x0C; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition ORI =	[ARITHI| "OP=0x0D; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition XORI =	[ARITHI| "OP=0x0E; RS = rs; RT = rt; IMM = imm;"]
+
+
+.instructionformat   CONSTANTS =[[		OP:6, RS:5, RT:5, IMM:16 ] | rt:5/register, imm:16/number]
+.instructiondefinition LUI =		[CONSTANTS | "OP=0x0F; RS = 0; RT = rt; IMM = imm;"]
+
+# these are actually wrong, RT should be the input instead of RS, but that would complicate the datapath
+.instructionformat SHIFT = [[ OP:6, RS:5, RT:5, RD:5, SHAMT:5, FUNC:6 ] | rd:5/register, rt:5/register, shamt:5/number]
+.instructiondefinition SLL = [SHIFT| "OP= 0; RS = rt; RT = rt; RD = rd; SHAMT = shamt; FUNC = 0;"]
+.instructiondefinition SRL = [SHIFT| "OP= 0; RS = rt; RT = rt; RD = rd; SHAMT = shamt; FUNC = 2;"]
+.instructiondefinition SRA = [SHIFT| "OP= 0; RS = rt; RT = rt; RD = rd; SHAMT = shamt; FUNC = 3;"]
+
+.instructionformat SHIFTV = [[ OP:6, RS:5, RT:5, RD:5, SHAMT:5, FUNC:6 ] | rd:5/register, rt:5/register, rs:5/register]
+.instructiondefinition SLLV = [SHIFTV| "OP= 0; RS = rs; RT = rt; RD = rd; SHAMT = 0; FUNC = 4;"]
+.instructiondefinition SRLV = [SHIFTV| "OP= 0; RS = rs; RT = rt; RD = rd; SHAMT = 0; FUNC = 6;"]
+.instructiondefinition SRAV = [SHIFTV| "OP= 0; RS = rs; RT = rt; RD = rd; SHAMT = 0; FUNC = 7;"]
+
+
+.instructionformat   LOADSTORE	=[[	OP:6, RS:5, RT:5, OFFS:16  ] | rt:5/register, offs:16/address, rs:5/register]
+.instructiondefinition LW =		[LOADSTORE | "OP=0x23; RS = rs; RT = rt; OFFS = offs<<2;"]
+.instructiondefinition SW =		[LOADSTORE | "OP=0x2B; RS = rs; RT = rt; OFFS = offs<<2;"]
+
+
+.instructionformat   BRANCH	=[[	OP:6, RS:5, RT:5, OFFS:16  ] | rs:5/register, rt:5/register, offs:16/label]
+.instructiondefinition BEQ =		[BRANCH | "OP=0x04; RS = rs; RT = rt; OFFS = offs-self-1;"]
+.instructiondefinition BNE =		[BRANCH | "OP=0x05; RS = rs; RT = rt; OFFS = offs-self-1;"]
+
+
+.memory REGISTERS
+.setting  {
+  targetMemory = "Mips Processor.Registers:Registers"
+  addressType = "register"
+}
+
+.memory DATAMEM
+.setting  targetMemory = "Mips Processor.Data Memory:Memory"

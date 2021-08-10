@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+
+<SIMPLE NAME="AND Gate">
+
+	<FORMS>
+		<POLYGON COLOR="#00A000">
+			<POINT POSX="-15"  POSY="-10"/>
+			<POINT POSX="8"  POSY="-10"/>
+			<POINT POSX="10"  POSY="-9"/>
+			<POINT POSX="12"  POSY="-8"/>
+			<POINT POSX="13"  POSY="-6"/>
+			<POINT POSX="14"  POSY="-3"/>
+			<POINT POSX="15"  POSY="-1"/>
+			<POINT POSX="15"  POSY="1"/>
+			<POINT POSX="14"  POSY="3"/>
+			<POINT POSX="13"  POSY="6"/>
+			<POINT POSX="12"  POSY="8"/>
+			<POINT POSX="10"  POSY="9"/>
+			<POINT POSX="8"  POSY="10"/>
+			<POINT POSX="-15"  POSY="10"/>
+			<POINT POSX="-15"  POSY="-10"/>
+		</POLYGON>
+		<TEXT POSX="0" POSY="30"  HALIGN="CENTER" VALIGN="CENTER" COLOR="#00A000">Branch</TEXT>
+	</FORMS>
+
+
+
+	<IO>
+		<INPUT	 COLOR="#000000"    	NAME = "In0"	BITS="1" 	POSX="-15" POSY = "-5"/>
+		<INPUT	 COLOR="#000000"    	NAME = "In1"	BITS="1" 	POSX="-15" POSY = "5"/>
+
+		<OUTPUT	 COLOR="#000000"    	NAME = "Out"	BITS="1" 	POSX="15" POSY = "0"/>
+	</IO>
+
+
+
+	<INTERNALS DELAY="8">
+		<ACTION EVENT = "INPUT_CHANGE">		Out = In0 &#38;&#38; In1; </ACTION>
+	</INTERNALS>
+
+
+</SIMPLE>

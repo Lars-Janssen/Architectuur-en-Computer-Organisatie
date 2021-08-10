@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="PC" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#0000C0" POSX="-10.0" POSY="-10.0"
+            WIDTH="20.0" HEIGHT="20.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+        </RECTANGLE>
+        <TEXT POSX="0.0" POSY="0.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#3300CC" FONT="Serif,plain,14.0">CS</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="4" SIGNED="false" POSX="10.0" POSY="0.0" NAME="In">
+            <LABEL POSX="-30.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="4" SIGNED="false" POSX="-10.0" POSY="0.0" NAME="Out">
+            <LABEL POSX="30.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="10">
+        <ACTION EVENT="CLOCK_RISING">
+			Out = In;		
+
+		</ACTION>
+    </INTERNALS>
+</SIMPLE>

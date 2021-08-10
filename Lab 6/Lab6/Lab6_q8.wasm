@@ -1,0 +1,24 @@
+# import the MIPS assembler definitions (syntax + semantics)
+@include "Mips.wasm"
+
+
+.data MyRegisters : REGISTERS
+0x00 : WORD 0x00 # put $0 to zero (default assumption)
+
+
+.data MyMemory : DATAMEM 
+0x00 : WORD x 0
+
+.code MyCode: MIPS, MyMemory
+#Ik gebruik het voorbeeld van wikipedia
+LUI  $2, 0x0000
+LUI  $1, 0x0000
+NOP
+NOP
+ORI  $2, $2, 0x0003
+ADDI $1, $2, 0x0001
+ORI  $2, $2, 0x0007
+
+
+
+

@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="Alu" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <POLYGON COLOR="#000000">
+            <STROKE/>
+            <POINT POSX="-20.0" POSY="-40.0"/>
+            <POINT POSX="20.0" POSY="-15.0"/>
+            <POINT POSX="20.0" POSY="15.0"/>
+            <POINT POSX="-20.0" POSY="40.0"/>
+            <POINT POSX="-20.0" POSY="10.0"/>
+            <POINT POSX="-12.0" POSY="0.0"/>
+            <POINT POSX="-20.0" POSY="-10.0"/>
+            <POINT POSX="-20.0" POSY="-40.0"/>
+            <POINT POSX="-20.0" POSY="-40.0"/>
+        </POLYGON>
+        <TEXT POSX="4.0" POSY="0.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0"> ALU </TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="-20.0" POSY="-30.0" NAME="Src0">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="-20.0" POSY="25.0" NAME="Src1">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="11" SIGNED="false" POSX="0.0" POSY="-27.0" NAME="ALUOp">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="20.0" POSY="-10.0" NAME="Zero">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="20.0" POSY="10.0" NAME="Result">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY>
+        <STORAGE NAME="Memory" SIZE="2" BITS="32" SIGNED="false"/>
+        <STORAGE NAME="multresult" SIZE="1" BITS="64" SIGNED="true"/>
+    </MEMORY>
+    <INTERNALS DELAY="2">
+        <ACTION EVENT="INPUT_CHANGE">{
+    32 bit R;
+	16 bit A;
+	16 bit B;
+	16 bit C;
+	16 bit D;
+    32 bit X;
+	32 bit Y;
+	32 bit LO;
+	32 bit HIGH;
+	32 bit result;
+	6 bit Func;
+	5 bit Shamt;
+	
+	Func = ALUOp &amp; 0x3F;
+	Shamt = (ALUOp &gt;&gt; 6) &amp; 0x1F;
+ 
+    if (Func == 0x24) R =  (Src0 &amp;  Src1); //AND
+    else if (Func == 0x0C) R = Src0 &amp; Src1; //ANDI
+    else if (Func == 0x25) R =  (Src0 |  Src1);//OR
+	else if (Func == 0x0D) R =  Src0 | (Src1 &amp; 0xFFFF) ; //ORI. Fix TW sept 18
+    else if (Func == 0x26) R =  (Src0 ^  Src1);//XOR
+    else if (Func == 0x0E) R =  (Src0 ^  (Src1 &amp; 0xFFFF));//XORI
+    else if (Func == 0x27) R = ~(Src0 |  Src1);//NOR
+    else if (Func == 0x00){
+		 R =  (Src0 &lt;&lt; Shamt);//SLL
+	}
+    else if (Func == 0x02){
+		 R =  (Src0 &gt;&gt; Shamt);//SRL
+	}
+    else if (Func == 0x07) R =  (Src0 &lt;  Src1);
+    else if (Func == 0x20) { //ADD
+        signed 32 bit Reg0;
+        signed 32 bit Reg1;
+        if (Src0 &amp; 0x80000000)  Reg0 = (Src0 - 0x100000000) &amp; 0xFFFFFFFF;
+        else Reg0 =  Src0;
+        if (Src1 &amp; 0x80000000)  Reg1 = (Src1 - 0x100000000) &amp; 0xFFFFFFFF;
+        else Reg1 = Src1;
+        R =  (Src0 + Src1);//ADD
+    }
+    else if (Func == 0x21) R =  (Src0 + Src1);//ADDU and SW bug tracing.....
+    //else if (Func == 0x09) R =  (Src0 + Src1); //ADDIU not used because same opcode as jalr
+    else if (Func == 0x08) {//ADDI
+        signed 32 bit Reg0;
+        signed 32 bit Reg1;
+        if (Src0 &amp; 0x80000000)  Reg0 = (Src0 - 0x100000000) &amp; 0xFFFFFFFF;
+        else Reg0 =  Src0;
+        if (Src1 &amp; 0x80000000)  Reg1 = (Src1 - 0x100000000) &amp; 0xFFFFFFFF;
+        else Reg1 = Src1;
+
+        R =  (Reg0 + Reg1); //ADDI signed
+    }
+    //    else if (Func == 0x23) R =  (Src0 - Src1);//SUBU conflict with LW!!
+    else if (Func == 0x22){//SUB
+         signed 32 bit Reg0;
+         signed 32 bit Reg1;
+         if (Src0 &amp; 0x80000000)  Reg0 = (Src0 - 0x100000000) &amp; 0xFFFFFFFF;
+         else Reg0 =  Src0;
+         if (Src1 &amp; 0x80000000)  Reg1 = (Src1 - 0x100000000) &amp; 0xFFFFFFFF;
+         else Reg1 = Src1;
+         R =  (Src0 - Src1);//SUB
+    }
+    else if (Func == 0x19){ 			
+			multresult[0] =  (unsigned 64 bit)Src0 *  (unsigned 64 bit)Src1;//MULTU
+		}
+	
+   else if (Func == 0x18) { 
+			multresult[0] = (signed 64 bit)Src0 * (signed 64 bit)Src1; //MULT
+		}
+   else if (Func == 0x12) R =  multresult[0]&amp;0xFFFFFFFF;//FETCH MULT
+   else if (Func == 0x10) R =  multresult[0]&gt;&gt;32; //FETCH MULT HIGH
+   
+    else if (Func == 0x1A) { if (Src1) R =  (Src0 /S Src1); } 
+
+    //    else if (Func == 0x2B) {if (Src0 &lt; Src1) R = 1; else R = 0;} //SLTU conflict with SW!
+    else if (Func == 0x2A) { //SLT (signed!)
+        signed 32 bit Reg0;
+        signed 32 bit Reg1;
+
+        if (Src0 &amp; 0x80000000)  Reg0 = (Src0 - 0x100000000) &amp; 0xFFFFFFFF;
+        else Reg0 =  Src0;
+        if (Src1 &amp; 0x80000000)  Reg1 = (Src1 - 0x100000000) &amp; 0xFFFFFFFF;
+        else Reg1 = Src1;
+		
+        if (Reg0 &lt; Reg1) R= 1; else R=0;
+    } 
+
+    else if (Func == 0x04) {if (R = Src0 - Src1);}//BEQ
+    else if (Func == 0x05) {if ((R = Src0 - Src1) != 0);}//BNE
+
+    else if (Func == 0x0F) R =  (Src1) &lt;&lt; 16; //LUI
+    else if (Func == 0x2B) R = Src0 + Src1; //SW
+    else if (Func == 0x23) R = Src0 + Src1; //LW
+
+	else if (Func == 0x09) R = Src0; //JALR
+	
+	Result = R;
+    if (Func == 0x05){ 
+        if ((Src0-Src1) != 0){ 
+            Zero = 1;
+         } else {
+            Zero = 0;
+        }
+
+    } else{
+        Zero = (R == 0);
+    }
+}
+</ACTION>
+    </INTERNALS>
+</SIMPLE>

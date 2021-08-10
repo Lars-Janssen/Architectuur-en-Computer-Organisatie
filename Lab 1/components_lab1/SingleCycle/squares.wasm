@@ -1,0 +1,40 @@
+# Author: Wouter Koolen-Wijkstra
+# Demo Mips program
+# works on single-, multicycle and pipelined architecture
+# calculates a list of squares of consecutive integers
+
+# import the MIPS assembler definitions (syntax + semantics)
+@include "Mips.wasm"
+
+.data MyRegiters : REGISTERS
+0x00 : WORD 0x00 # put $0 to zero (default assumption)
+
+.data MyMemory : DATAMEM 
+0x00 : WORD result
+
+.code MyCode: MIPS, MyMemory
+# ----------------------------
+# -- Program start point    --
+# ----------------------------
+# the first number to square
+LI $1, 0x0
+
+# the one-after-last number to square
+LI $2, 0x10
+
+# the index to write the result in memory
+LI $3, 0x4
+
+# a (case sensitive) label delimits the loop
+Loop:	
+	#calculate the square
+	MUL 	$4, $1, $1
+	NOP			# to ensure $4 is available on time
+	ADDI 	$1, $1, 0x1 	# next number
+	SW 	$4, result, $3	# store the square
+	ADDI 	$3, $3, 0x4	# next memory location
+	BNE 	$1, $2, Loop	# compare to maximum integer to square
+NOP
+NOP
+
+

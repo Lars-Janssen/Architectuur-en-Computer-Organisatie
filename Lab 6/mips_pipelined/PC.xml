@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+
+<SIMPLE NAME="PC">
+	<FORMS>
+		<RECTANGLE POSX="-10"	POSY = "-20" WIDTH="20" HEIGHT="40" COLOR="#0000C0"/>
+		<TEXT		POSX="0"	POSY="0"    HALIGN="CENTER" VALIGN="CENTER" COLOR="#000000">PC</TEXT>
+	</FORMS>
+
+	<IO>
+		<INPUT	 COLOR="#000000"    	NAME = "In"	 BITS="32" 	POSX="-10" POSY = "0"/>
+		<OUTPUT	 COLOR="#000000"    	NAME = "Out" BITS="32" 	POSX="10" POSY = "0"/>
+	</IO>
+
+	<MEMORY>
+		<STORAGE NAME="FirstCycle" BITS="1" SIZE="1"/>
+	</MEMORY>
+
+	<INTERNALS DELAY="7">
+		<ACTION EVENT = "CLOCK_FALLING">
+			if (FirstCycle[0])
+			{
+				Out = 0;
+				FirstCycle[0] = 0;
+			}
+			else
+			{
+				Out = In;
+			}
+		</ACTION>
+
+	</INTERNALS>
+
+
+
+</SIMPLE>

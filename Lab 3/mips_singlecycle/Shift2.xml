@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="Left 2 Shifter" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#000000" POSX="-16.0" POSY="-10.0"
+            WIDTH="32.0" HEIGHT="20.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+        </RECTANGLE>
+        <TEXT POSX="0.0" POSY="0.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,10.0">&lt;&lt; 2</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="0.0" POSY="10.0" NAME="In">
+            <LABEL POSX="0.0" POSY="10.0" HALIGN="CENTER" VALIGN="TOP"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="16.0" POSY="0.0" NAME="Out">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="10">
+        <ACTION EVENT="INPUT_CHANGE"> Out = In &lt;&lt; 2;</ACTION>
+    </INTERNALS>
+</SIMPLE>

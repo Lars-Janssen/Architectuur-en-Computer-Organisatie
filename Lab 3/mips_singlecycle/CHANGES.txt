@@ -1,0 +1,6 @@
+aug 2015. TW: "official" MIPS register names added to mips.wasm
+aug 2015. TW: starting bug fix SLL to conform to SLL, $r1, $r2, shamt instead of 3 regs. arg
+aug. 2016 TW: fix mult high word result 
+aug. 2016 TW: support for MIPS registernames $a0 etc.
+sept.2018 TW: ORI fixed for negative argument.
+

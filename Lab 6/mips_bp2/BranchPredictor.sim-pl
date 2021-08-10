@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="BranchPredictor" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#000000" POSX="-10.0" POSY="-10.0"
+            WIDTH="70.0" HEIGHT="40.0" RADIUSX="2.0" RADIUSY="2.0">
+            <STROKE/>
+        </RECTANGLE>
+        <TEXT POSX="25.0" POSY="10.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">Branch
+Predictor</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="0.0" POSY="-10.0" NAME="PC">
+            <LABEL POSX="-20.0" POSY="-30.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="10.0" POSY="-10.0" NAME="IsBranch">
+            <LABEL POSX="25.0" POSY="-30.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="60.0" POSY="0.0" NAME="Taken">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="-10.0" POSY="0.0" NAME="NTaken">
+            <LABEL POSX="-50.0" POSY="-5.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="-10.0" POSY="10.0" NAME="Address">
+            <LABEL POSX="-55.0" POSY="5.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="-10.0" POSY="20.0" NAME="Target">
+            <LABEL POSX="-20.0" POSY="10.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="60.0" POSY="10.0" NAME="Other">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="50.0" POSY="-10.0" NAME="PPC">
+            <LABEL POSX="80.0" POSY="-50.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="30.0" POSY="-10.0" NAME="Missed">
+            <LABEL POSX="50.0" POSY="-50.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="40.0" POSY="-10.0" NAME="WasBranch">
+            <LABEL POSX="70.0" POSY="-30.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="0.0" POSY="30.0" NAME="Offset">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+    </IO>
+    <MEMORY>
+        <STORAGE NAME="Counters" SIZE="16" BITS="2" SIGNED="false"/>
+        <STORAGE NAME="Tags" SIZE="16" BITS="4" SIGNED="false"/>
+    </MEMORY>
+    <INTERNALS DELAY="8">
+        <ACTION EVENT="INPUT_CHANGE">{
+NTaken = 0;
+Taken = 0;
+Address = 0;
+Other = Target;
+
+if (IsBranch) {
+	4 bit index = PC &gt;&gt; 2;
+	4 bit tag = PC &gt;&gt; 6;
+	if (Tags[index] == tag) {
+		if (Counters[index] &gt;= 2) {
+			NTaken = 1;
+			Taken = 1;
+			Address = Target;
+			Other = PC;
+		}
+	}
+	else {
+		if (Offset &gt;&gt; 15) {
+			NTaken = 1;
+			Taken = 1;
+			Address = Target;
+			Other = PC;
+		}
+	}
+}
+}</ACTION>
+        <ACTION EVENT="INIT">{
+	NTaken =0;
+	Taken = 0;
+	Address = 0;
+	for (8 bit i = 0; i &lt; 16; i++)
+		Counters[i] = 1;
+}</ACTION>
+        <ACTION EVENT="CLOCK_FALLING">{
+if (WasBranch) {
+	4 bit index = PPC &gt;&gt; 2;
+	if (Missed) {
+		if (Counters[index] &lt; 2)
+			Counters[index] = Counters[index] + 1;
+		else
+			Counters[index] = Counters[index] - 1;
+	}
+	else {
+		if (Counters[index] == 1)
+			Counters[index] = 0;
+		else if (Counters[index] == 2)
+			Counters[index] = 3;
+	}
+}
+
+if (IsBranch) {
+	4 bit index = PC &gt;&gt; 2;
+	4 bit tag = PC &gt;&gt; 6;
+	if (Tags[index] != tag) {
+		Tags[index] = tag;
+        if (Offset &gt;&gt; 15)
+			Counters[index] = 2;
+		else
+			Counters[index] = 1;
+	}
+}
+}</ACTION>
+    </INTERNALS>
+</SIMPLE>

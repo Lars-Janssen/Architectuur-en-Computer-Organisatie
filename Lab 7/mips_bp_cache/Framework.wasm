@@ -1,0 +1,13 @@
+# name and student number here
+@include "Mips.wasm"
+
+.data MyRegisters : REGISTERS
+0x00 : WORD 0x00 # put $0 to zero (default assumption)
+
+.data MyMemory : DATAMEM 
+@include "matrixes.wasm"
+0x300 : WORD c 0 # you can put the result matrix starting at c
+
+.code MyCode: MIPS, MyMemory
+
+  NOP

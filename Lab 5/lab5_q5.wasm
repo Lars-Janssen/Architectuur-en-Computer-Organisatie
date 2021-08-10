@@ -1,0 +1,45 @@
+#generated assembly code for SIMPL
+@include "Mips.wasm"
+.data	MyRegisters:	REGISTERS
+0:	WORD    a          0      
+1:	WORD    b          0      
+2:	WORD    most_sign  0      
+3:	WORD    least_sign 0      
+4:	WORD     0      
+5:	WORD     0      
+6:	WORD     0      
+7:	WORD     0      
+8:	WORD     0      
+9:	WORD     0      
+10:	WORD     0      
+29:	WORD     0      
+31:	WORD         
+.data	MyMemory:	DATAMEM
+50:	WORD stack	# start of stack
+0:	WORD     0      
+1:	WORD     0      
+2:	WORD     0  
+4:	WORD 6 
+7:	WORD    6
+16:	WORD 9
+   
+.code	MyCode:	MIPS,MyMemory
+	J       INIT   
+L1:	# main
+
+#this program multiplies 0xF72A9029 by 0xC73BA7F3
+#the result is stored in registers 3 and 4, with
+#the most significant bits in 3 and the least in 4.
+	LUI     $0     , 0xF72A    
+	ORI     $0     , $0     , 0x9029   
+	LUI     $1     , 0xC73B      	
+	ORI     $1     , $1     , 0xA7F3
+	MULT    $0     , $1   
+	MFHI    $2
+	MFLO    $3
+   
+	#return int value	# stack ret value
+	JR      $31    	# return
+INIT:	# Start of our program
+	J       L1     	# jump to the main code
+END:

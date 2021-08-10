@@ -1,0 +1,45 @@
+#Generated assembly code MIPS Single Cycle architecture
+@include "Mips.wasm"
+
+.data MyRegisters : REGISTERS
+0x00 : WORD 0x00                 # Set register $0 to zero (Required by MIPS)
+
+.data MyMemory : DATAMEM
+0x00 : WORD 0x00
+
+# Instruction memory
+.code MyCode: MIPS, MyMemory
+
+# ----------------------------
+# -- Program start point    --
+# ----------------------------
+# Store number a in register 1
+LI	$4, 1
+ADD 	$1, $4, $0
+
+# Store number b in register 2
+LI	$5, 2
+ADD 	$2, $5, $0
+
+# Add register 1 and register 2 
+# and store the result in register 3
+ADD 	$6, $1, $2
+ADD 	$3, $6, $0
+
+# ----------------------------
+# -- Program end point      --
+# ----------------------------
+
+# -- Orginal C code --
+#{
+#  int a;
+#  int b;
+#
+#  int result;
+#
+#  a = 1;
+#  b = 2;
+#
+#  result = a + b;
+#
+#}

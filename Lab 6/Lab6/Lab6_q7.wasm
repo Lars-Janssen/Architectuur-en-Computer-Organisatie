@@ -1,0 +1,44 @@
+# import the MIPS assembler definitions (syntax + semantics)
+@include "Mips.wasm"
+
+
+.data MyRegisters : REGISTERS
+0x00 : WORD 0x00 # put $0 to zero (default assumption)
+
+
+.data MyMemory : DATAMEM 
+0x00 : WORD x 0
+
+.code MyCode: MIPS, MyMemory
+
+# testing some taken branches, forward and backwards
+# extra nops so mispredictions are more visible
+# taken forward branch in a loop
+  ORI $1, $0, 11
+loop1:
+  BEQ $0, $0, forward3
+  NOP
+  NOP
+  NOP
+forward3:
+  SUBI $1, $1, 1
+  BNE $0, $1, loop1
+  NOP
+  NOP
+
+
+
+  ORI $1, $0, 11
+loop2:
+  NOP
+  NOP
+backward1oop:
+  NOP
+  NOP
+  SUBI $1, $1, 1
+  BEQ $1, $0, backward1oop
+  NOP
+  NOP
+  BEQ $0, $0, loop2
+  NOP
+  NOP

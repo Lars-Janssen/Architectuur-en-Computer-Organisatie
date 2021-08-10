@@ -1,0 +1,90 @@
+# Generated assembly code Pipelined architecture (forloop)
+@include "Mips.wasm"
+
+.data MyRegisters : REGISTERS
+0x00 : WORD 0x00 # put $0 to zero (default assumption)
+
+.data MyMemory : DATAMEM
+0x00 : WORD 0x00
+
+.code MyCode: MIPS, MyMemory
+
+# int a = 1;
+LI	$5, 1
+NOP
+NOP
+
+# int b = 2;
+ADD 	$1, $5, $0
+NOP
+NOP
+#
+# for(i=0;i<4;i=i+1)
+# i = 0;
+#
+LI	$6, 2
+NOP
+NOP
+ADD 	$2, $6, $0
+NOP
+NOP
+LI	$7, 0
+NOP
+NOP
+ADD 	$3, $7, $0
+NOP
+NOP
+
+L0:
+#
+# i < 4;
+#
+LI	$8, 4
+NOP
+NOP
+SLT 	$9, $3, $8
+NOP
+NOP
+BEQ 	$0, $9, L1
+NOP
+NOP
+#
+# i++;
+#
+ADD 	$10, $1, $3
+NOP
+NOP
+ADD 	$4, $10, $0
+NOP
+NOP
+#
+# result = a + i;
+#
+LI	$11, 1
+NOP
+NOP
+ADD 	$12, $3, $11
+NOP
+NOP
+ADD 	$3, $12, $0
+NOP
+NOP
+
+BEQ 	$0, $0, L0
+L1:
+
+# - Original C code -
+#{
+#	int a;
+#	int b;
+#	int i;
+#
+#	int result;
+#
+#	a = 1;
+#	b = 2;
+#	
+#	for(i=0;i<4;i=i+1){
+#		result = a + i;
+#	}
+#}

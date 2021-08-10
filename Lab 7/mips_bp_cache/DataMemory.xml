@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="Data Memory" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#000000" POSX="-40.0" POSY="-40.0"
+            WIDTH="80.0" HEIGHT="80.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+        </RECTANGLE>
+        <TEXT POSX="0.0" POSY="-10.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">Data</TEXT>
+        <TEXT POSX="0.0" POSY="10.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">Memory</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="-10.0" POSY="-40.0" NAME="Address">
+            <LABEL POSX="20.0" POSY="-30.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="-20.0" POSY="-40.0" NAME="WriteData">
+            <LABEL POSX="-20.0" POSY="-10.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="10.0" POSY="-40.0" NAME="MemWrite">
+            <LABEL POSX="100.0" POSY="-50.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="20.0" POSY="-40.0" NAME="MemRead">
+            <LABEL POSX="80.0" POSY="-30.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="160" SIGNED="false" POSX="40.0" POSY="0.0" NAME="ReadData">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY>
+        <STORAGE NAME="Memory" SIZE="4096" BITS="32" SIGNED="false"/>
+        <STORAGE NAME="buffer" SIZE="3" BITS="160" SIGNED="false"/>
+    </MEMORY>
+    <INTERNALS DELAY="8">
+        <ACTION EVENT="CLOCK_FALLING">{
+	32 bit shift1 = (Address &amp; 0x3) &lt;&lt; 0x3; // ( &lt;&lt; 3 = maal 8)
+	32 bit shift2 = 0x20 - shift1;
+	32 bit wordAddr = Address &gt;&gt; 2;
+
+	// Alleen schrijven als het adres laag genoeg is 
+	// (voorkomt out of bound error)
+	if (MemWrite &amp;&amp; wordAddr &lt; 4096)
+	{
+		32 bit writeMask = 0xFFFFFFFF;
+		32 bit writeCurrMask = ~(writeMask &lt;&lt; shift1);
+		32 bit writeNextMask = ~(writeMask &gt;&gt; shift2);
+		
+		Memory[wordAddr+0] = Memory[wordAddr+0] &amp; writeCurrMask;
+		Memory[wordAddr+1] = Memory[wordAddr+1] &amp; writeNextMask;
+
+		Memory[wordAddr+0] = Memory[wordAddr+0] | WriteData &lt;&lt; shift1;
+		Memory[wordAddr+1] = Memory[wordAddr+1] | WriteData &gt;&gt; shift2;
+	}
+
+	
+	// Lees alleen als het adres laag genoeg is
+	// (voorkomt out of bound error)
+	if (MemRead &amp;&amp; wordAddr &lt; 4096)
+	{
+		32 bit addr = (Address &amp; -16) &gt;&gt; 2;
+		160 bit res = Address &amp; -16;
+		res = (res &lt;&lt; 32) | Memory[addr + 3];
+		res = (res &lt;&lt; 32) | Memory[addr + 2];
+		res = (res &lt;&lt; 32) | Memory[addr + 1];
+		res = (res &lt;&lt; 32) | Memory[addr + 0];
+		buffer[2] = res;
+	}
+	else
+	{
+		buffer[2] = ((160 bit) 0) - 1;
+	}
+}
+		</ACTION>
+        <ACTION EVENT="CLOCK_RISING">{
+	ReadData = buffer[0];
+	buffer[0] = buffer[1];
+	buffer[1] = buffer[2];
+	buffer[2] = -1;
+}</ACTION>
+    </INTERNALS>
+</SIMPLE>

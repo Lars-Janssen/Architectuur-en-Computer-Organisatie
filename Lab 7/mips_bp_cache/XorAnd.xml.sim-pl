@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="XorAnd" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <POLYGON COLOR="#00A000">
+            <STROKE/>
+            <POINT POSX="-15.0" POSY="-10.0"/>
+            <POINT POSX="8.0" POSY="-10.0"/>
+            <POINT POSX="10.0" POSY="-9.0"/>
+            <POINT POSX="12.0" POSY="-8.0"/>
+            <POINT POSX="13.0" POSY="-6.0"/>
+            <POINT POSX="14.0" POSY="-3.0"/>
+            <POINT POSX="15.0" POSY="-1.0"/>
+            <POINT POSX="15.0" POSY="1.0"/>
+            <POINT POSX="14.0" POSY="3.0"/>
+            <POINT POSX="13.0" POSY="6.0"/>
+            <POINT POSX="12.0" POSY="8.0"/>
+            <POINT POSX="10.0" POSY="9.0"/>
+            <POINT POSX="8.0" POSY="10.0"/>
+            <POINT POSX="-15.0" POSY="10.0"/>
+            <POINT POSX="-15.0" POSY="-10.0"/>
+        </POLYGON>
+        <TEXT POSX="0.0" POSY="-20.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#00A000" FONT="Dialog,plain,12.0">Branch</TEXT>
+        <POLYGON COLOR="#00A000">
+            <STROKE/>
+            <POINT POSX="-50.0" POSY="0.0"/>
+            <POINT POSX="-40.0" POSY="0.0"/>
+            <POINT POSX="-35.0" POSY="2.0"/>
+            <POINT POSX="-32.0" POSY="5.0"/>
+            <POINT POSX="-29.0" POSY="10.0"/>
+            <POINT POSX="-32.0" POSY="15.0"/>
+            <POINT POSX="-35.0" POSY="18.0"/>
+            <POINT POSX="-40.0" POSY="20.0"/>
+            <POINT POSX="-50.0" POSY="20.0"/>
+            <POINT POSX="-49.0" POSY="18.0"/>
+            <POINT POSX="-48.0" POSY="15.0"/>
+            <POINT POSX="-47.0" POSY="10.0"/>
+            <POINT POSX="-48.0" POSY="5.0"/>
+            <POINT POSX="-49.0" POSY="2.0"/>
+        </POLYGON>
+        <POLYGON COLOR="#00A000">
+            <STROKE/>
+            <POINT POSX="-53.0" POSY="0.0"/>
+            <POINT POSX="-52.0" POSY="2.0"/>
+            <POINT POSX="-51.0" POSY="5.0"/>
+            <POINT POSX="-50.0" POSY="10.0"/>
+            <POINT POSX="-51.0" POSY="15.0"/>
+            <POINT POSX="-52.0" POSY="18.0"/>
+            <POINT POSX="-53.0" POSY="20.0"/>
+            <POINT POSX="-52.0" POSY="18.0"/>
+            <POINT POSX="-51.0" POSY="15.0"/>
+            <POINT POSX="-50.0" POSY="10.0"/>
+            <POINT POSX="-51.0" POSY="5.0"/>
+            <POINT POSX="-52.0" POSY="2.0"/>
+        </POLYGON>
+        <LINE COLOR="#00A000" FROMX="-30" FROMY="10" TOX="-15" TOY="5">
+            <STROKE/>
+        </LINE>
+        <LINE COLOR="#00A000" FROMX="-60" FROMY="5" TOX="-48" TOY="5">
+            <STROKE/>
+        </LINE>
+        <LINE COLOR="#00A000" FROMX="-60" FROMY="15" TOX="-48" TOY="15">
+            <STROKE/>
+        </LINE>
+    </FORMS>
+    <IO>
+        <INPUT BITS="1" SIGNED="false" POSX="-60.0" POSY="5.0" NAME="In0">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-60.0" POSY="15.0" NAME="In1">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="1" SIGNED="false" POSX="15.0" POSY="0.0" NAME="Out">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-15.0" POSY="-5.0" NAME="In2">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="6">
+        <ACTION EVENT="INPUT_CHANGE">Out = (In0 ^ In1) &amp; In2;</ACTION>
+    </INTERNALS>
+</SIMPLE>

@@ -1,0 +1,42 @@
+Clock cycle length: 100
+
+Single cycle
+Addition: 6 instructions, 6 cycles, 1 CPI
+Forloop: 45 instructions, 45 cycles, 3 CPI
+Squares: 11 instructions, 101 cycles, 9 CPI
+
+Multi cycle
+Addtion: 6 instructions, 21 cycles, 4 CPI
+Forloop: 15 instructions, 56 cycles, 4 CPI
+Squares: 11 instructions,  354 cycles, 32 CPI
+
+Pipelined
+Addition: 15 instructions, 15 cycles, 1 CPI
+Forloop: 43 instructions, 43 cycles, 1 CPI
+Squares: 27 instructions, 297 cycles, 11 CPI
+
+
+For Single -cycle it is 6 / 0.5 = 12 microseconds
+
+For Multi -cycle it is 21 / 1.0 = 21 microseconds  
+
+For Pipe-line it is 15 / 1.5 = 10 microseconds
+
+So Pipe-line is the fastest.
+
+
+
+ADDI is used with three parameters, which are registers. It adds the last two given registers and saves this number in the first given register.
+
+ It is used to add numbers.
+
+NOP is an instruction that does nothing, it is used to get the right timing.
+
+LI loads a number into a register and that is how it is used.
+
+
+
+The program tries to do 1-2 to get -1, but because this this is below zero it underflows so the answer it gives is FFFFFFFF, so it looks like it didn't work but it did.
+
+
+A high clock rate can mean instructions need more clockcycles, because the time of one cycle is shorter, so the performance can stay the same or even decrease if the clock rate is increased.

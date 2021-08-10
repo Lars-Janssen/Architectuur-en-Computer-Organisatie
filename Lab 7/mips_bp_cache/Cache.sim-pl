@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="Cache" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#000000" POSX="0.0" POSY="-10.0" WIDTH="60.0"
+            HEIGHT="60.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+        </RECTANGLE>
+        <TEXT POSX="30.0" POSY="20.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">cache</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="0.0" POSY="20.0" NAME="Address">
+            <LABEL POSX="-40.0" POSY="0.0" HALIGN="CENTER" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="60.0" POSY="30.0" NAME="Line0">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="60.0" POSY="40.0" NAME="Line1">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <INPUT BITS="160" SIGNED="false" POSX="30.0" POSY="50.0" NAME="Read">
+            <LABEL POSX="0.0" POSY="20.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="60.0" POSY="0.0" NAME="Tag0">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="60.0" POSY="10.0" NAME="Tag1">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="0.0" POSY="30.0" NAME="WriteVal">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="0.0" POSY="10.0" NAME="Write">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="0.0" POSY="0.0" NAME="RRead">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+    </IO>
+    <MEMORY>
+        <STORAGE NAME="Lines" SIZE="16" BITS="128" SIGNED="false"/>
+        <STORAGE NAME="LRU" SIZE="8" BITS="1" SIGNED="false"/>
+        <STORAGE NAME="Tags" SIZE="16" BITS="32" SIGNED="false"/>
+    </MEMORY>
+    <INTERNALS DELAY="1">
+        <ACTION EVENT="CLOCK_FALLING">{
+if (Address &lt; 0x4000)
+{
+	32 bit index = ((Address &gt;&gt; 4) &amp; 7) &lt;&lt; 1;
+	32 bit shift = (Address &amp; 15) &lt;&lt; 3;
+
+	if (Write) {
+		if (Tags[index + 0] == (Address &amp; -128)) {
+			128 bit line = Lines[index + 0];
+			128 bit mask = 0xFFFFFFFF;
+			mask = mask &lt;&lt; shift;
+			line = (line &amp; ~mask) | (((128 bit)WriteVal) &lt;&lt; shift);
+			Lines[index + 0] = line;
+			LRU[index &gt;&gt; 1] = 1;
+		}
+		if (Tags[index + 1] == (Address &amp; -128)) {
+			128 bit line = Lines[index + 1];
+			128 bit mask = 0xFFFFFFFF;
+			mask = mask &lt;&lt; shift;
+			line = (line &amp; ~mask) | (((128 bit)WriteVal) &lt;&lt; shift);
+			Lines[index + 1] = line;
+			LRU[index &gt;&gt; 1] = 0;
+		}
+	}
+
+	Line0 = Lines[index + 0] &gt;&gt; shift;
+	Line1 = Lines[index + 1] &gt;&gt; shift;
+	Tag0 = Tags[index + 0];
+	Tag1 = Tags[index + 1];
+
+	if ((Address &amp; 3) != 0) {
+		Tag0 = 0xFFFFFFFF;
+		Tag1 = 0xFFFFFFFF;
+	}
+
+	if (RRead &amp;&amp; Tags[index + 0] == (Address &amp; -128))
+		LRU[index &gt;&gt; 1] = 1;
+	if (RRead &amp;&amp; Tags[index + 1] == (Address &amp; -128))
+		LRU[index &gt;&gt; 1] = 0;
+}
+if ((Read &gt;&gt; 128) &lt; 0x4000)
+{
+	32 bit addr = Read &gt;&gt; 128;
+	32 bit index = ((addr &gt;&gt; 4) &amp; 7) &lt;&lt; 1;
+	if (LRU[index &gt;&gt; 1] &amp;&amp; Tags[index + 0] != (addr &amp; -128)) {
+		Lines[index + 1] = Read;
+		Tags[index + 1] = addr &amp; -128;
+	}
+	else if (Tags[index + 1] != (addr &amp; -128)) {
+		Lines[index + 0] = Read;
+		Tags[index + 0] = addr &amp; -128;
+	}
+}
+}</ACTION>
+        <ACTION EVENT="INIT">for (32 bit i = 0; i &lt; 8; i++)
+	LRU[i] = 0;</ACTION>
+    </INTERNALS>
+</SIMPLE>

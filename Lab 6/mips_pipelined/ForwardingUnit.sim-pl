@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="ForwardingUnit" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#000000" POSX="-10.0" POSY="-15.0"
+            WIDTH="70.0" HEIGHT="50.0" RADIUSX="10.0" RADIUSY="10.0">
+            <STROKE/>
+        </RECTANGLE>
+        <TEXT POSX="25.0" POSY="10.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Serif,plain,12.0">forwarding
+unit</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="5" SIGNED="false" POSX="-10.0" POSY="5.0" NAME="RS">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="5" SIGNED="false" POSX="-10.0" POSY="15.0" NAME="RT">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="5" SIGNED="false" POSX="40.0" POSY="35.0" NAME="RD_MEM">
+            <LABEL POSX="40.0" POSY="25.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="5" SIGNED="false" POSX="30.0" POSY="35.0" NAME="RD_WB">
+            <LABEL POSX="-15.0" POSY="25.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="30.0" POSY="-15.0" NAME="WriteRegMem">
+            <LABEL POSX="30.0" POSY="-50.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="40.0" POSY="-15.0" NAME="WriteRegWb">
+            <LABEL POSX="165.0" POSY="-50.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="2" SIGNED="false" POSX="0.0" POSY="-15.0" NAME="ForwardA">
+            <LABEL POSX="-85.0" POSY="-25.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="2" SIGNED="false" POSX="10.0" POSY="-15.0" NAME="ForwardB">
+            <LABEL POSX="-35.0" POSY="-25.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="1">
+        <ACTION EVENT="INPUT_CHANGE">{
+	ForwardA = 0;
+	ForwardB = 0;
+	if (WriteRegWb &amp;&amp; RD_WB != 0 &amp;&amp; RD_WB == RS)
+		ForwardA = 1;
+	if (WriteRegWb &amp;&amp; RD_WB != 0 &amp;&amp; RD_WB == RT)
+		ForwardB = 1;
+	if (WriteRegMem &amp;&amp; RD_MEM != 0 &amp;&amp; RD_MEM == RS)
+		ForwardA = 2;
+	if (WriteRegMem &amp;&amp; RD_MEM != 0 &amp;&amp; RD_MEM == RT)
+		ForwardB = 2;
+}</ACTION>
+    </INTERNALS>
+</SIMPLE>

@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<SIMPLE NAME="WireCutter">
+
+	<FORMS>
+		<POLYGON COLOR="#00A000">
+			<POINT POSX="-10"  POSY="-40"/>
+			<POINT POSX="-05"  POSY="-45"/>
+			<POINT POSX="05"  POSY="-45"/>
+			<POINT POSX="10"  POSY="-40"/>
+			<POINT POSX="10"  POSY="05"/>
+			<POINT POSX="05"  POSY="10"/>
+			<POINT POSX="-05"  POSY="10"/>
+			<POINT POSX="-10"  POSY="05"/>
+			<POINT POSX="-10"  POSY="-40"/>
+		</POLYGON>
+	</FORMS>
+
+
+	<IO>
+		<INPUT	 COLOR="#000000"    	NAME = "Switch" BITS="1" 	POSX="0" POSY = "-45"/>
+
+		<INPUT	 COLOR="#000000"     NAME = "RegWriteIn"		BITS="1"  POSX="-10" POSY = "-35"/>
+		<INPUT	 COLOR="#000000"     NAME = "MemToRegIn"		BITS="1"  POSX="-10" POSY = "-25"/>
+		<INPUT	 COLOR="#000000"     NAME = "MemReadIn"			BITS="1"  POSX="-10" POSY = "-15"/>
+		<INPUT	 COLOR="#000000"     NAME = "MemWriteIn"		BITS="1"  POSX="-10" POSY = "-5"/>
+		<INPUT	 COLOR="#000000"     NAME = "BranchIn"			BITS="1"  POSX="-10" POSY = "5"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "RegWriteOut"		BITS="1"  POSX="10" POSY = "-35"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "MemToRegOut"		BITS="1"  POSX="10" POSY = "-25"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "MemReadOut"		BITS="1"  POSX="10" POSY = "-15"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "MemWriteOut"		BITS="1"  POSX="10" POSY = "-5"/>
+		<OUTPUT	 COLOR="#000000"     NAME = "BranchOut"			BITS="1"  POSX="10" POSY = "5"/>
+
+	</IO>
+
+
+
+	<INTERNALS DELAY="8">
+		<ACTION EVENT = "INPUT_CHANGE">		        if (Switch == 0)
+													{
+														RegWriteOut =	RegWriteIn;
+														MemToRegOut =	MemToRegIn;
+														MemReadOut =	MemReadIn;
+														MemWriteOut =	MemWriteIn;
+														BranchOut =	    BranchIn;
+													}
+													else
+													{
+														RegWriteOut =	0;
+														MemToRegOut =	0;
+														MemReadOut =	0;
+														MemWriteOut =	0;
+														BranchOut =	0;
+													}
+		</ACTION>
+	</INTERNALS>
+
+
+</SIMPLE>

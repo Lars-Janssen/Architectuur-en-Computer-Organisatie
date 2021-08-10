@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="Data Memory" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#000000" POSX="-40.0" POSY="-40.0"
+            WIDTH="80.0" HEIGHT="80.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+        </RECTANGLE>
+        <TEXT POSX="0.0" POSY="-10.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">Data</TEXT>
+        <TEXT POSX="0.0" POSY="10.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">Memory</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="-40.0" POSY="-20.0" NAME="Address">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="32" SIGNED="false" POSX="-40.0" POSY="25.0" NAME="WriteData">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="-10.0" POSY="-40.0" NAME="MemWrite">
+            <LABEL POSX="0.0" POSY="-30.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="10.0" POSY="-40.0" NAME="MemRead">
+            <LABEL POSX="60.0" POSY="-20.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="40.0" POSY="0.0" NAME="ReadData">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY>
+        <STORAGE NAME="Memory" SIZE="512" BITS="32" SIGNED="false"/>
+    </MEMORY>
+    <INTERNALS DELAY="8">
+        <ACTION EVENT="CLOCK_FALLING">{
+	32 bit shift1 = (Address &amp; 0x3) &lt;&lt; 0x3; // ( &lt;&lt; 3 = maal 8)
+	32 bit shift2 = 0x20 - shift1;
+	32 bit wordAddr = Address &gt;&gt; 2;
+
+	// Alleen schrijven als het adres laag genoeg is 
+	// (voorkomt out of bound error)
+	if (MemWrite &amp;&amp; Address &lt; 512)
+	{
+		32 bit writeMask = 0xFFFFFFFF;
+		32 bit writeCurrMask = ~(writeMask &lt;&lt; shift1);
+		32 bit writeNextMask = ~(writeMask &gt;&gt; shift2);
+		
+		Memory[wordAddr+0] = Memory[wordAddr+0] &amp; writeCurrMask;
+		Memory[wordAddr+1] = Memory[wordAddr+1] &amp; writeNextMask;
+
+		Memory[wordAddr+0] = Memory[wordAddr+0] | WriteData &lt;&lt; shift1;
+		Memory[wordAddr+1] = Memory[wordAddr+1] | WriteData &gt;&gt; shift2;
+	}
+
+	
+	// Lees alleen als het adres laag genoeg is
+	// (voorkomt out of bound error)
+	if (MemRead &amp;&amp; Address &lt; 512)
+	{
+		ReadData = 	Memory[wordAddr+0] &gt;&gt; shift1 |
+					Memory[wordAddr+1] &lt;&lt; shift2;
+	}
+
+}
+		</ACTION>
+    </INTERNALS>
+</SIMPLE>

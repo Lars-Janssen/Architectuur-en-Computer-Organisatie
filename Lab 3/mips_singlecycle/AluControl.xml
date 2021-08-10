@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+
+<SIMPLE NAME="ALU Control">
+	<FORMS>
+		<ELLIPSE POSX="0" POSY="0" RADIUSX="20" RADIUSY="30" COLOR="#00A000"/>
+		<TEXT POSX="0" POSY="-10"  HALIGN="CENTER" VALIGN="CENTER" COLOR="#00A000">ALU</TEXT>
+		<TEXT POSX="0" POSY="10"  HALIGN="CENTER" VALIGN="CENTER" COLOR="#00A000">ctrl</TEXT>
+	</FORMS>
+
+
+	<IO>
+		<INPUT	 COLOR="#000000"     NAME = "In"		BITS = "6"	POSX="-20" POSY = "  0"/>
+		<INPUT	 COLOR="#000000"     NAME = "ALUOp"	BITS = "2"	POSX="0" POSY = " 30"/>
+
+		<OUTPUT	 COLOR="#000000"     NAME = "Out"	BITS = "3"	POSX="20" POSY = "0"/>
+	</IO>
+
+
+	<INTERNALS DELAY="3">
+		<ACTION EVENT = "INPUT_CHANGE">		             if (ALUOp == 0b00) Out = 0b010;
+		                                            else if (ALUOp == 0b01) Out = 0b110;
+													else if (ALUOp == 0b10)
+													{
+														     if (In == 0b100000) Out = 0b010;
+														else if (In == 0b100010) Out = 0b110;
+														else if (In == 0b100100) Out = 0b000;
+														else if (In == 0b100101) Out = 0b001;
+														else if (In == 0b101010) Out = 0b111;
+													}
+		</ACTION>
+	</INTERNALS>
+
+</SIMPLE>

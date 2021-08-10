@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<SIMPLE NAME="New Simple Component" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <RECTANGLE COLOR="#000000" POSX="50.0" POSY="30.0" WIDTH="80.0"
+            HEIGHT="160.0" RADIUSX="0.0" RADIUSY="0.0">
+            <STROKE/>
+        </RECTANGLE>
+        <TEXT POSX="90.0" POSY="90.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,12.0">Instruction
+
+Register</TEXT>
+    </FORMS>
+    <IO>
+        <INPUT BITS="32" SIGNED="false" POSX="50.0" POSY="100.0" NAME="Instruction">
+            <LABEL POSX="-10.0" POSY="0.0" HALIGN="RIGHT" VALIGN="CENTER"/>
+        </INPUT>
+        <INPUT BITS="1" SIGNED="false" POSX="90.0" POSY="30.0" NAME="IRWrite">
+            <LABEL POSX="0.0" POSY="-10.0" HALIGN="CENTER" VALIGN="BOTTOM"/>
+        </INPUT>
+        <OUTPUT BITS="16" SIGNED="false" POSX="130.0" POSY="180.0" NAME="Imm">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="5" SIGNED="false" POSX="130.0" POSY="70.0" NAME="rs">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="5" SIGNED="false" POSX="130.0" POSY="90.0" NAME="rt">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="5" SIGNED="false" POSX="130.0" POSY="150.0" NAME="rd">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+        <OUTPUT BITS="32" SIGNED="false" POSX="130.0" POSY="50.0" NAME="InstructionOut">
+            <LABEL POSX="10.0" POSY="0.0" HALIGN="LEFT" VALIGN="CENTER"/>
+        </OUTPUT>
+    </IO>
+    <MEMORY/>
+    <INTERNALS DELAY="1">
+        <ACTION EVENT="CLOCK_RISING">
+if (IRWrite)
+{
+	InstructionOut = Instruction;
+	Imm = Instruction;
+	rd = Instruction &gt;&gt; 0d11;
+	rt = Instruction &gt;&gt; 0d16;
+	rs = Instruction &gt;&gt; 0d21;
+}
+		</ACTION>
+    </INTERNALS>
+</SIMPLE>

@@ -1,0 +1,74 @@
+#generated assembly code for SIMPL
+@include "Mips.wasm"
+.data	MyRegisters:	REGISTERS
+0:	WORD    carousel    0      
+1:	WORD    leftmostbit    0      
+2:	WORD    overflowdetection 0      
+3:	WORD    one 0      
+4:	WORD    shiftdirection 0      
+5:	WORD    underflow 0      
+6:	WORD    shiftamount 0      
+7:	WORD    counter 0      
+8:	WORD     0      
+9:	WORD     0      
+10:	WORD     0      
+29:	WORD    sp      0      
+31:	WORD    ra     
+.data	MyMemory:	DATAMEM
+50:	WORD stack	# start of stack
+0:	WORD    a       0      
+1:	WORD    b       0      
+2:	WORD    result  0  
+4:	WORD 6 
+7:	WORD    6
+16:	WORD 9
+   
+.code	MyCode:	MIPS,MyMemory
+	J       INIT   
+L1:	# main
+
+	LUI     $0     , 0x0000        #upper part beginpattern
+	ORI     $0     , $0     , 0x0006    #lower part beginpattern
+	ORI     $4     , $4     , 1    #set to 0 for shift right, 1 for shift left
+	LUI     $1     , 0x8000	#used to check left-most bit
+	ORI     $3     , $3     , 1    #used to check over/underflow
+	ORI     $6     , $6     , 1    #amount of bits to be shifted
+	BNE     $3     , $4     , 19
+LEFT:
+#the bits are correct here
+	LUI     $7     , 0 #counter for the shift amount	
+	ORI     $7     , $7     , 0
+LEFTLOOP:
+#shifts to the left and checks if a bit is lost
+	BEQ     $7     , $6     , 8
+	ADDI    $7     , $7     , 1
+	SLT     $2     , $1     , $0   #check for overflow
+	BEQ     $2     , $3     , 16
+	SLL     $0     , $0     , 1    #shift the bits 
+	J       LEFTLOOP
+	SLL     $0     , $0     , 1
+	ORI     $0     , $0     , 1	#loops the bit over
+	J       LEFTLOOP
+
+RIGHT:
+#the bits are correct here
+	LUI     $7     , 0 #counter for the shift amount	
+	ORI     $7     , $7     , 0
+RIGHTLOOP:
+#shifts to the right and checks if a bit is lost
+	BEQ     $7     , $6     , 19
+	ADDI    $7     , $7     , 1
+	AND     $2     , $0     , $3   #check for overflow
+	BEQ     $2     , $3     , 27
+	SRL     $0     , $0     , 1    #shift the bits
+	J       RIGHTLOOP
+	SRL     $0     , $0     , 1
+	LUI     $5     , 0x8000	#loops the bit over
+	OR      $0     , $0     , $5
+	J       RIGHTLOOP
+
+	#return int value	# stack ret value
+	JR      $31    	# return
+INIT:	# Start of our program
+	J       L1     	# jump to the main code
+END:

@@ -1,0 +1,169 @@
+# Author: Wouter Koolen-Wijkstra
+# This file contains the MIPS WASM instruction format definition
+# revision August 2013 Taco Walstra. Opcodes for "real" mips
+
+.processor MIPS
+.setting targetMemory = "Mips Processor.Instruction Memory:Memory"
+.autocast {
+        number -> address
+        number -> label
+}
+
+.highlight {
+	# nice green highlight
+	[ "Mips Processor.Instruction Memory" | "(Address>>2)"   | "#C8C8FF"]
+	[ "Mips Processor.Instruction Memory" | "0xFFFFFFFF-(Address==0xFFFFFFFF)*0xFFFFFFFF"   | "#A6FFCA"]
+}
+
+.constant {
+   $0  =	0x0/register
+   $1  =  	0x1/register 
+   $2  =  	0x2 /register
+   $3  =  	0x3 /register
+   $4  =  	0x4 /register
+   $5  =  	0x5 /register
+   $6  =  	0x6 /register
+   $7  =  	0x7 /register
+   $8  =  	0x8 /register
+   $9  =  	0x9 /register
+   $10 =  	0xA /register
+   $11 =   	0xB /register
+   $12 =   	0xC /register
+   $13 =   	0xD /register
+   $14 =   	0xE /register
+   $15 =   	0xF /register
+   $16 =   	0x10 /register
+   $17 =   	0x11 /register
+   $18 =   	0x12 /register
+   $19 =   	0x13 /register
+   $20 =   	0x14/register
+   $21 =   	0x15 /register
+   $22 =   	0x16 /register
+   $23 =   	0x17 /register
+   $24 =   	0x18 /register
+   $25 =   	0x19 /register
+   $26 =   	0x1A /register
+   $27 =   	0x1B /register
+   $28 =   	0x1C /register
+   $29 =   	0x1D /register
+   $30 =   	0x1E/register
+   $31 =   	0x1F /register
+#reserved register names
+   $zero =  0 /register
+   $v0 =    2 /register
+   $v1 =    3 /register
+   $a0 =    4 /register
+   $a1 =    5 /register
+   $a2 =    6 /register
+   $a3 =    7 /register
+   $t0 =    8 /register
+   $t1 =    9 /register
+   $t2 =    10 /register
+   $t3 =    11 /register
+   $t4 =    12 /register
+   $t5 =    13 /register
+   $t6 =    14 /register
+   $t7 =    15 /register
+   $s0 =    16 /register
+   $s1 =    17 /register
+   $s2 =    18 /register
+   $s3 =    19 /register
+   $s4 =    20 /register
+   $s5 =    21 /register
+   $s6 =    22 /register
+   $s7 =    23 /register
+   $t8 =    24 /register
+   $t9 =    25 /register
+   $k0 =    26 /register
+   $k1 =    27 /register
+   $gp =    28 /register
+   $sp =    29 /register
+   $ra =    31 /register
+}
+
+# third: instruction format and instruction definitions
+
+
+.instructionformat   NOP = 		[[ZERO:32 ] | ]
+.instructiondefinition NOP =	[NOP |  "ZERO=0;"]
+
+
+.instructionformat   ARITH  =[ [	OP:6, RS:5, RT:5, RD: 5, SHAMT:5, FUNC: 6 ] | rd:5/register, rs:5/register, rt:5/register]
+.instructiondefinition ADD =	[ARITH| " OP = 0; FUNC = 0x20; RS = rs; RT = rt; RD = rd; SHAMT = 0;"]
+#.instructiondefinition ADDU =	[ARITH| " OP = 0; FUNC = 0x21; RS = rs; RT = rt; RD = rd; SHAMT = 0;"]
+.instructiondefinition AND =	[ARITH | " OP = 0; FUNC = 0x24; RS = rs; RT = rt; RD = rd; SHAMT = 0;"]
+.instructiondefinition OR =	    [ARITH | " OP = 0; FUNC = 0x25; RS = rs; RT = rt; RD = rd; SHAMT = 0;"]
+.instructiondefinition NOR =	[ARITH| " OP = 0; FUNC = 0x27; RS = rs; RT = rt; RD = rd; SHAMT = 0;"]
+.instructiondefinition SLT =	[ARITH| " OP = 0; FUNC = 0x2A; RS = rs; RT = rt; RD = rd; SHAMT = 0;"]
+#.instructiondefinition SLTU =	[ARITH| " OP = 0; FUNC = 0x2B; RS = rs; RT = rt; RD = rd; SHAMT = 0;"]
+.instructiondefinition SUB =	[ARITH| " OP = 0; FUNC = 0x22; RS = rs; RT = rt; RD = rd; SHAMT = 0;"]
+.instructiondefinition SUBU =	[ARITH| " OP = 0; FUNC = 0x23; RS = rs; RT = rt; RD = rd; SHAMT = 0;"]
+.instructiondefinition XOR =	[ARITH| " OP = 0; FUNC = 0x26; RS = rs; RT = rt; RD = rd; SHAMT = 0;"]
+
+.instructionformat   LOGIC  =[ [	OP:6, RS:5, RT:5, RD: 5, SHAMT:5, FUNC: 6 ] | rd:5/register, rs:5/register, imm:5 /number]
+.instructiondefinition SLL =	[LOGIC| " OP = 0; FUNC = 0x00; RS = rs; RD = rd; SHAMT = imm;"]
+.instructiondefinition SRL =	[LOGIC| " OP = 0; FUNC = 0x02; RS = rs; RD = rd; SHAMT = imm;"]
+
+
+.instructionformat   MULDIV	=[[	OP:6, RS:5, RT:5, NUL:10, FUNC:6 ] | rs:5/register, rt:5/register]
+.instructiondefinition MULT =	[MULDIV| " OP = 0; FUNC = 0x18; RS = rs; RT = rt; NUL = 0;"]
+.instructiondefinition MULTU= 	[MULDIV| " OP = 0; FUNC = 0x19; RS = rs; RT = rt; NUL = 0;"]
+.instructiondefinition DIV =	[MULDIV| " OP = 0; FUNC = 0x1A; RS = rs; RT = rt; NUL = 0;"]
+.instructiondefinition DIVU= 	[MULDIV| " OP = 0; FUNC = 0x1B; RS = rs; RT = rt; NUL = 0;"]
+
+.instructionformat   JALR	=[[	OP:6, RS:5, RD:5, NUL:10, FUNC:6 ] | rd:5/register, rs:5/register]
+.instructiondefinition JALR =   [JALR| " OP = 0; FUNC = 0x09; RS = rs; RD = rd; NUL = 0;"]
+
+.instructionformat   JR	=[[	OP:6, RS:5, NUL:15, FUNC:6 ] | rs:5/register]
+.instructiondefinition JR =   [JR| " OP = 0; FUNC = 0x08; RS = rs; NUL = 0;"]
+
+.instructionformat   LDHIGHLO	=[[	OP:6, NUL:10, RD:5, NUL2:5, FUNC:6 ] | rd:5/register]
+.instructiondefinition MFHI = [LDHIGHLO| " OP = 0; FUNC = 0x10; RD = rd; NUL = 0;NUL2 = 0;"]
+.instructiondefinition MFLO = [LDHIGHLO| " OP = 0; FUNC = 0x12; RD = rd; NUL = 0;NUL2 = 0;"]
+
+.instructionformat   ARITHI=[[		OP:6, RS:5, RT:5, IMM:16 ] | rt:5/register, rs:5/register, imm:16/number]
+.instructiondefinition ADDI =	[ARITHI| "OP=0x08; RS = rs; RT = rt; IMM = imm;"]
+#.instructiondefinition ADDIU =	[ARITHI| "OP=0x09; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition ANDI =	[ARITHI| "OP=0x0C; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition ORI =	[ARITHI| "OP=0x0D; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition XORI =	[ARITHI| "OP=0x0E; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition SLTI =	[ARITHI| "OP=0x08; RS = rs; RT = rt; IMM = imm;"]
+
+
+.instructionformat   CONSTANTS =[[		OP:6, RS:5, RT:5, IMM:16 ] | rt:5/register, imm:16/number]
+#.instructiondefinition LB =		[CONSTANTS | "OP=0x20; RS = 0; RT = rt; IMM = imm;"]
+#.instructiondefinition SB =		[CONSTANTS | "OP=0x28; RS = 0; RT = rt; IMM = imm;"]
+#.instructiondefinition LBU =		[CONSTANTS | "OP=0x24; RS = 0; RT = rt; IMM = imm;"]
+#.instructiondefinition LH =		[CONSTANTS | "OP=0x21; RS = 0; RT = rt; IMM = imm;"]
+#.instructiondefinition LHU =		[CONSTANTS | "OP=0x25; RS = 0; RT = rt; IMM = imm;"]
+.instructiondefinition LUI =		[CONSTANTS | "OP=0x0F; RS = 0; RT = rt; IMM = imm;"]
+
+
+.instructionformat   LOADSTORE	=[[	OP:6, RS:5, RT:5, OFFS:16  ] | rt:5/register, offs:16/address, rs:5/register]
+.instructiondefinition LW =		[LOADSTORE | "OP=0x23; RS = rs; RT = rt; OFFS = offs<<2;"]
+.instructiondefinition SW =		[LOADSTORE | "OP=0x2B; RS = rs; RT = rt; OFFS = offs<<2;"]
+#.instructiondefinition LW =		[LOADSTORE | "OP=0x23; RS = rs; RT = rt; OFFS = offs;"]
+#.instructiondefinition SW =		[LOADSTORE | "OP=0x2B; RS = rs; RT = rt; OFFS = offs;"]
+
+
+.instructionformat   BRANCH	=[[	OP:6, RS:5, RT:5, OFFS:16  ] | rs:5/register, rt:5/register, offs:16/label]
+.instructiondefinition BEQ =		[BRANCH | "OP=0x04; RS = rs; RT = rt; OFFS = offs-self-1;"]
+.instructiondefinition BNE =		[BRANCH | "OP=0x05; RS = rs; RT = rt; OFFS = offs-self-1;"]
+
+
+.instructionformat   JUMP	=[[	OP:6, OFFS:26  ] | offs:26/label]
+.instructiondefinition J =      [JUMP | "OP=0x02; OFFS=offs;"]
+#.instructionformat   CALL	=[[	OP:6, OFFS:16  ] | offs:16/label]
+.instructiondefinition JAL = [JUMP | "OP=0x03;OFFS=offs;"]
+
+#.instructionformat   CALL	=[JUMP | offs:16/label]
+#.instructiondefinition JOEPIE = [CALL | "OP=0x03;RD=31;OFFS=self-1;"]
+
+.memory REGISTERS
+.setting  {
+  targetMemory = "Mips Processor.Registers:Registers"
+  addressType = "register"
+}
+
+.memory DATAMEM
+.setting  targetMemory = "Mips Processor.Data Memory:Memory"

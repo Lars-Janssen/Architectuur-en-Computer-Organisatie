@@ -1,0 +1,113 @@
+# Author: Wouter Koolen-Wijkstra
+# This file contains the MIPS WASM instruction format definition
+
+.processor MIPS
+.setting targetMemory = "Mips Processor.Instruction Memory:Memory"
+
+.highlight {
+	# nice green highlight
+	[ "Mips Processor.Instruction Memory" | "(Address>>2)"   | "#E0FFE0"]
+	[ "Mips Processor.Instruction Memory" | "0xFFFFFFFF-(Address==0xFFFFFFFF)*0xFFFFFFFF"   | "#FFE0E0"]
+}
+
+.constant {
+   $0  =	0x0/register
+   $1  =  	0x1/register 
+   $2  =  	0x2 /register
+   $3  =  	0x3 /register
+   $4  =  	0x4 /register
+   $5  =  	0x5 /register
+   $6  =  	0x6 /register
+   $7  =  	0x7 /register
+   $8  =  	0x8 /register
+   $9  =  	0x9 /register
+   $10 =  	0xA /register
+   $11 =   	0xB /register
+   $12 =   	0xC /register
+   $13 =   	0xD /register
+   $14 =   	0xE /register
+   $15 =   	0xF /register
+   $16 =   	0x10 /register
+   $17 =   	0x11 /register
+   $18 =   	0x12 /register
+   $19 =   	0x13 /register
+   $20 =   	0x14/register
+   $21 =   	0x15 /register
+   $22 =   	0x16 /register
+   $23 =   	0x17 /register
+   $24 =   	0x18 /register
+   $25 =   	0x19 /register
+   $26 =   	0x1A /register
+   $27 =   	0x1B /register
+   $28 =   	0x1C /register
+   $29 =   	0x1D /register
+   $30 =   	0x1E/register
+   $31 =   	0x1F /register
+}
+
+# third: instruction format and instruction definitions
+
+
+.instructionformat   NOP = 		[[ZERO:0d32 ] | ]
+.instructiondefinition NOP =	[NOP |  "ZERO=0;"]
+
+
+.instructionformat   ARITH  =[ [	OP:0d6, RS:0d5, RT:0d5, RD: 5, NUL:0d5, FUNC: 6 ] | rd:0d5/register, rs:0d5/register, rt:0d5/register]
+.instructiondefinition AND =	[ARITH | " OP = 0; FUNC = 0x01; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition OR =	[ARITH | " OP = 0; FUNC = 0x02; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition NAND =	[ARITH| " OP = 0; FUNC = 0x03; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition NOR =	[ARITH| " OP = 0; FUNC = 0x04; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition XOR =	[ARITH| " OP = 0; FUNC = 0x05; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition SLL =	[ARITH| " OP = 0; FUNC = 0x06; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition SRL =	[ARITH| " OP = 0; FUNC = 0x07; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition SLT =	[ARITH| " OP = 0; FUNC = 0x08; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition SEQ =	[ARITH| " OP = 0; FUNC = 0x09; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition ADD =	[ARITH| " OP = 0; FUNC = 0x0A; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition SUB =	[ARITH| " OP = 0; FUNC = 0x0B; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition MULU= 	[ARITH| " OP = 0; FUNC = 0x0C; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition MUL =	[ARITH| " OP = 0; FUNC = 0x0D; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition DIVU= 	[ARITH| " OP = 0; FUNC = 0x0E; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+.instructiondefinition DIV =	[ARITH| " OP = 0; FUNC = 0x0F; RS = rs; RT = rt; RD = rd; NUL = 0;"]
+
+
+.instructionformat   ARITHI=[[		OP:0d6, RS:0d5, RT:0d5, IMM:0d16 ] | rt:0d5/register, rs:0d5/register, imm:0d16/number]
+.instructiondefinition ANDI =	[ARITHI| "OP=0x01; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition ORI =	[ARITHI| "OP=0x02; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition NANDI= 	[ARITHI| "OP=0x03; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition NORI =	[ARITHI| "OP=0x04; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition XORI =	[ARITHI| "OP=0x05; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition SLLI =	[ARITHI| "OP=0x06; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition SRLI =	[ARITHI| "OP=0x07; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition SLTI =	[ARITHI| "OP=0x08; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition SEQI =	[ARITHI| "OP=0x09; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition ADDI =	[ARITHI| "OP=0x0A; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition SUBI =	[ARITHI| "OP=0x0B; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition MULUI= 	[ARITHI| "OP=0x0C; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition MULI =	[ARITHI| "OP=0x0D; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition DIVUI= 	[ARITHI| "OP=0x0E; RS = rs; RT = rt; IMM = imm;"]
+.instructiondefinition DIVI =	[ARITHI| "OP=0x0F; RS = rs; RT = rt; IMM = imm;"]
+
+
+.instructionformat   CONSTANTS =[[		OP:0d6, RS:0d5, RT:0d5, IMM:0d16 ] | rt:0d5/register, imm:0d16/number]
+.instructiondefinition LI =		[CONSTANTS | "OP=0x10; RS = 0; RT = rt; IMM = imm;"]
+.instructiondefinition LUI =		[CONSTANTS | "OP=0x11; RS = 0; RT = rt; IMM = imm;"]
+
+
+.instructionformat   LOADSTORE	=[[	OP:0d6, RS:0d5, RT:0d5, OFFS:0d16  ] | rt:0d5/register, offs:0d16/address, rs:0d5/register]
+.instructiondefinition LW =		[LOADSTORE | "OP=0x20; RS = rs; RT = rt; OFFS = offs<<2;"]
+.instructiondefinition SW =		[LOADSTORE | "OP=0x21; RS = rs; RT = rt; OFFS = offs<<2;"]
+
+
+.instructionformat   BRANCH	=[[	OP:0d6, RS:0d5, RT:0d5, OFFS:0d16  ] | rs:0d5/register, rt:0d5/register, offs:0d16/label]
+.instructiondefinition BEQ =		[BRANCH | "OP=0x30; RS = rs; RT = rt; OFFS = offs-self-1;"]
+.instructiondefinition BNE =		[BRANCH | "OP=0x31; RS = rs; RT = rt; OFFS = offs-self-1;"]
+
+
+.memory REGISTERS
+.setting  {
+  targetMemory = "Mips Processor.Registers:Registers"
+  addressType = "register"
+}
+
+.memory DATAMEM
+.setting  targetMemory = "Mips Processor.Data Memory:Memory"

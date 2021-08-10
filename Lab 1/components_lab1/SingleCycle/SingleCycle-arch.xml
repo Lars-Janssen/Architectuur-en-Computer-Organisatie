@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<COMPLEX NAME="SingleCycle" PREFERREDNUMBERFORMAT="Hexadecimal" PREFERREDCYCLELENGTH="10">
+    <PARAMETERS/>
+    <FORMS>
+        <TEXT POSX="-20.0" POSY="0.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,bold,20.0">Single Cycle Architecture</TEXT>
+        <TEXT POSX="-520.0" POSY="460.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="Dialog,plain,20.0">Clock</TEXT>
+        <TEXT POSX="-530.0" POSY="170.0" HALIGN="CENTER" VALIGN="CENTER"
+            COLOR="#000000" FONT="SansSerif,bold,14.0">PC</TEXT>
+    </FORMS>
+    <IO/>
+    <SUBCOMPONENTS>
+        <SUBCOMPONENT NAME="Mips Processor" DATA="Mips.xml"
+            POSX="-250.0" POSY="-100.0" ZOOM="1.0" FLIP="NONE">
+            <PARAMETERVALS/>
+            <STUBS/>
+        </SUBCOMPONENT>
+        <SUBCOMPONENT NAME="ArchOvelay" DATA="ArchOvelay.sim-pl"
+            POSX="-480.0" POSY="-370.0" ZOOM="1.0" FLIP="NONE">
+            <PARAMETERVALS/>
+            <STUBS/>
+        </SUBCOMPONENT>
+    </SUBCOMPONENTS>
+    <WIRES/>
+</COMPLEX>

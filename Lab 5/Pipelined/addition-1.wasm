@@ -1,0 +1,40 @@
+#Generated assembly code Pipelined architecture
+@include "Mips.wasm"
+
+.data MyRegisters : REGISTERS
+0x00 : WORD 0x00 # put $0 to zero (default assumption)
+
+.data MyMemory : DATAMEM
+0x00 : WORD 0x00
+
+# Instruction codes are stored in the program memory. 
+.code MyCode: MIPS, MyMemory
+
+# Store number a in register 1
+# int a = 0x1;
+LUI 	$1, 0x0    
+ORI 	$1, $1, 0x1
+
+# Store number b in register 2
+# int b = 0x2;
+LUI	$2, 0x0 
+ORI	$2, $2, 0x2
+
+# Add register 1 and register 2
+# and store the result in register 3
+ADD 	$3, $1, $2
+
+
+# - Orginal C code -
+#{
+#	int a;
+#	int b;
+#
+#	int result;
+#
+#	a = 1;
+#	b = 2;
+#
+#	result = a + b;
+#
+#}
